@@ -390,7 +390,8 @@
 /obj/item/clothing/head/helmet/f13/legion/legrecruit/legprime
 	name = "legion prime helmet"
 	desc = "A helmet belonging to a legion prime, it looks sturdier than a normal legion recruit helmet."
-	item_state = "legprime"
+	item_state = "legprim"
+	icon_state = "legprim"
 	armor = list("melee" = 50, "bullet" = 35, "laser" = 15, "energy" = 15, "bomb" = 25, "bio" = 40, "rad" = 0, "fire" = 60, "acid" = 0)
 
 /obj/item/clothing/head/helmet/f13/legion/scout
@@ -402,10 +403,10 @@
 
 /obj/item/clothing/head/helmet/f13/legion/explorer
 	name = "legion explorer hood"
-	desc = "It's a leather hood worn by legion explorers. It looks carefully crafted."
+	desc = "It's a leather hood worn by legion explorers. It looks carefully crafted and reinforced."
 	icon_state = "cult_hoodalt"
 	item_state = "cult_hoodalt"
-	armor = list("melee" = 40, "bullet" = 25, "laser" = 10, "energy" = 10, "bomb" = 16, "bio" = 30, "rad" = 0, "fire" = 50, "acid" = 0)
+	armor = list("melee" = 60, "bullet" = 40, "laser" = 25, "energy" = 15, "bomb" = 25, "bio" = 50, "rad" = 0, "fire" = 70, "acid" = 0)
 
 /obj/item/clothing/head/helmet/f13/legion/legveteran
 	name = "legion veteran helmet"
@@ -445,7 +446,8 @@
 /obj/item/clothing/head/helmet/f13/legion/legdecan/vet/prime
 	name = "legion prime decanus helmet"
 	desc = "It's a leather legion helmet that's been reinforced with stronger leather patches and anointed with a array of red and dark red feathers. This one has a few small white feathers woven inside of it aswell."
-	item_state = "legdecanprime"
+	item_state = "legdecanprim"
+	icon_state = "legdecanprim"
 	armor = list("melee" = 50, "bullet" = 35, "laser" = 15, "energy" = 15, "bomb" = 25, "bio" = 40, "rad" = 0, "fire" = 60, "acid" = 0)
 
 /obj/item/clothing/head/helmet/f13/legion/legdecan/vet
