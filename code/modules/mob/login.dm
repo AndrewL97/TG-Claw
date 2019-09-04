@@ -38,10 +38,7 @@
 			continue
 		var/datum/atom_hud/alternate_appearance/AA = v
 		AA.onNewMob(src)
-	l_plane = new()
-	l_general = new()
-	client.screen += l_plane
-	client.screen += l_general
+		
 	update_client_colour()
 	update_mouse_pointer()
 	if(client)

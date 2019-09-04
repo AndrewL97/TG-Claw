@@ -61,7 +61,9 @@
 	name = "Bad Deathclaw"
 	desc = "The wasteland is calling.."
 	//icon = 'icons/blank_title.png'
-	layer = FLY_LAYER
+	plane = SPLASHSCREEN_PLANE
+	layer = SPLASHSCREEN_LAYER
+	//why are we using this, and not the splash fullscreen?
 
 /turf/closed/indestructible/splashscreen/New()
 	icon = 'icons/misc/splashscreen.dmi'

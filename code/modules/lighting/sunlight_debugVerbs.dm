@@ -1,6 +1,6 @@
 mob/verb/zzz()
     world << "Do de shit"
-    SSsunlight.workQueue |= GLOB.GLOBAL_LIGHT_OVERLAYS
+    GLOB.SUNLIGHT_QUEUE_WORK |= GLOB.SUNLIGHT_OVERLAYS
 
 
 mob/verb/newSunlight()
@@ -27,7 +27,7 @@ mob/verb/deleteSunlight()
 
 mob/verb/SunlightInfo()
     world << "Sunlight"
-    world << "There are [GLOB.GLOBAL_LIGHT_OVERLAYS.len] sunlight turfs"
+    // world << "There are [GLOB.SUNLIGHT_OVERLAYS.len] sunlight turfs"
     var/turf/T = loc
 
     var/atom/movable/sunlight_overlay/SL = T.sunlight_overlay
@@ -94,6 +94,6 @@ mob/verb/SunlightInfo()
 
 mob/verb/ATQW()
     var/turf/T = loc
-    world << "Adding to work queue - len [SSsunlight.workQueue.len]"
-    SSsunlight.workQueue |= T.sunlight_overlay
-    world << "new len [SSsunlight.workQueue.len]"
+    world << "Adding to work queue - len [GLOB.SUNLIGHT_QUEUE_WORK.len]"
+    GLOB.SUNLIGHT_QUEUE_WORK |= T.sunlight_overlay
+    world << "new len [GLOB.SUNLIGHT_QUEUE_WORK.len]"

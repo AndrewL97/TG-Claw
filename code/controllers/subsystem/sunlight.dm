@@ -12,12 +12,16 @@
 #define CYCLE_NIGHTTIME 810000
 
 
-GLOBAL_LIST_EMPTY(GLOBAL_LIGHT_OVERLAYS) // global light overlays
-GLOBAL_REAL_VAR(GLOBAL_LIGHT_RANGE)
 
-/var/total_sunlight_overlays = 0
-/var/sunlight_overlays_initialised = FALSE
+GLOBAL_VAR_INIT(GLOBAL_LIGHT_RANGE, 3)
+GLOBAL_LIST_EMPTY(SUNLIGHT_QUEUE_WORK)   /* turfs to be stateChecked */
+GLOBAL_LIST_EMPTY(SUNLIGHT_QUEUE_UPDATE) /* turfs to have their colours updated via corners (filter out the unroofed dudes) */
+GLOBAL_LIST_EMPTY(SUNLIGHT_QUEUE_CORNER) /* turfs to have their colour/lights/etc updated */
+GLOBAL_LIST_EMPTY(SUNLIGHT_OVERLAYS)
+// /var/total_sunlight_overlays = 0
+// /var/sunlight_overlays_initialised = FALSE
 
+// GLOBAL_LIST_INIT(globSunBackdrop, list (new/obj/lighting_general))
 // cannibalized from lighting.dm
 
 
@@ -46,48 +50,39 @@ GLOBAL_REAL_VAR(GLOBAL_LIGHT_RANGE)
 SUBSYSTEM_DEF(sunlight)
 	name = "sunlight"
 	wait = 1
-	// init_order = SS_INIT_sunlight
+	flags = SS_TICKER
+	init_order = INIT_ORDER_SUNLIGHT
 
-	// Queues of update counts, waiting to be rolled into stats lists
-	var/list/stats_queues = list(
-		"Overlay" = list(),
-		"colour" = list()
-	)
-	// Stats lists
-	var/list/stats_lists = list(
-		"Overlay" = list(),
-		"colour" = list()
-	)
+	var/screenColour = COLOR_ASSEMBLY_BEIGE //rando spin
+	var/list/obj/screen/plane_master/lighting/sunlighting_planes = list()
 
-	var/processed_colours = 0
-	var/processed_overlays = 0
-	var/processed_corners = 0
-
-	var/update_stats_every = 1
-	var/next_stats_update = 0
-	var/stat_updates_to_keep = 5
-
-	var/list/workQueue = list()    /* turfs to be stateChecked */
-	var/wq_index = 1
-	var/list/updateQueue = list()    /* turfs to have their colour/lights/etc updated */
-	var/uq_indeq = 1
-	var/list/cornerQueue = list()    /* turfs to have their colours updated via corners (filter out the unroofed dudes) */
-	var/cq_indeq = 1
-
-	var/light_color = "#808080"
-	var/light_power = 3
-	var/light_range = 3
-	var/color = "#808080"
+	var/color = "#FFFFFF"
 	var/list/cornerColour = list()
+
 	var/currentTime
 
+datum/controller/subsystem/sunlight/stat_entry()
+	..("L:[GLOB.SUNLIGHT_QUEUE_WORK.len]|C:[GLOB.SUNLIGHT_QUEUE_CORNER.len]|O:[GLOB.SUNLIGHT_QUEUE_UPDATE.len]")
 
+datum/controller/subsystem/sunlight/proc/fullPlonk()
+	var/msg = "b4 wq [GLOB.SUNLIGHT_QUEUE_WORK.len]"
+	to_chat(world, "<span class='boldannounce'>[msg]</span>")
+	log_world(msg)
+	GLOB.SUNLIGHT_QUEUE_WORK = GLOB.SUNLIGHT_OVERLAYS
+	msg = "af wq [GLOB.SUNLIGHT_QUEUE_WORK.len]"
+	to_chat(world, "<span class='boldannounce'>[msg]</span>")
+	log_world(msg)
 
 /datum/controller/subsystem/sunlight/Initialize()
-	// InitializeTurfs()
-	workQueue = GLOB.GLOBAL_LIGHT_OVERLAYS
-	fire(FALSE,TRUE)
-	sunlight_overlays_initialised = TRUE
+	if(!initialized)
+		InitializeTurfs()
+		fullPlonk()
+		initialized = TRUE
+	fire(FALSE, TRUE)
+
+	// l_sunPlane = new()
+	// l_sun = new()
+	// sunlight_overlays_initialised = TRUE
 	..()
 
 // It's safe to pass a list of non-turfs to this list - it'll only check turfs.
@@ -95,143 +90,106 @@ SUBSYSTEM_DEF(sunlight)
 	-Thooloo
 	*/
 /datum/controller/subsystem/sunlight/proc/InitializeTurfs(list/targets)
-	//for (var/turf/T in (targets || world))
 	for (var/z in SSmapping.levels_by_trait(ZTRAIT_STATION))
 		for (var/turf/T in block(locate(1,1,z), locate(world.maxx,world.maxy,z)))
 			if (T.dynamic_lighting && T.loc:dynamic_lighting)
 				T.sunlight_overlay = new /atom/movable/sunlight_overlay(T)
-
-// // It's safe to pass a list of non-turfs to this list - it'll only check turfs.
-
-// /datum/controller/subsystem/sunlight/proc/InitializeTurfs(list/targets)
-// 	for (var/turf/T in (targets || world))
-
-// 		if (T.dynamic_sunlight && T.loc:dynamic_sunlight)
-// 			T.sunlight_build_overlay()
-
+	var/msg = "af loop [GLOB.SUNLIGHT_QUEUE_WORK.len]"
+	to_chat(world, "<span class='boldannounce'>[msg]</span>")
+	log_world(msg)
 
 
 /* set sunlight colour */
 /datum/controller/subsystem/sunlight/proc/setColour()
-	var/rp = /*LIGHTING_MULT_FACTOR **/ sqrt(GetRedPart(light_color)   / 255		)
-	var/bp = /*LIGHTING_MULT_FACTOR **/ sqrt(GetBluePart(light_color)  / 255		)
-	var/gp = /*LIGHTING_MULT_FACTOR **/ sqrt(GetGreenPart(light_color) / 255		)
 
-	var/mx = max(rp, bp, gp) // Scale it so 1 is the strongest lum, if it is above 1.
-	. = 1 // factor
-	if (mx > 1)
-		. = 1 / mx
-
-	rp = round(rp * ., LIGHTING_ROUND_VALUE)
-	bp = round(bp * ., LIGHTING_ROUND_VALUE)
-	gp = round(gp * ., LIGHTING_ROUND_VALUE)
 
 	color = list(
-		-rp, -gp, -bp, 00,
-		-rp, -gp, -bp, 00,
-		-rp, -gp, -bp, 00,
-		-rp, -gp, -bp, 00,
-		-00, -00, -00, 01
+		01, 01, 01, 01,
+		01, 01, 01, 01,
+		01, 01, 01, 01,
+		01, 01, 01, 01,
+		00, 00, 00, 00
 	)
 
-
-	//SSsunlight.cornerColour["[cr][cg][cb][ca]"]
 	/* get all variations of corner colours, so we dont have to recalc this */
 	/* I couldn't think of a neater way to do this */
 	for( var/cr = 0 to 1)
 		for( var/cg = 0 to 1)
-			for( var/cb = 0 to 1)	
+			for( var/cb = 0 to 1)
 				for( var/ca = 0 to 1)
 					cornerColour["[cr][cg][cb][ca]"] = \
 					list(
-						(cr * rp), (cr * gp), (cr * bp), 00,
-						(cg * rp), (cg * gp), (cg * bp), 00,
-						(cb * rp), (cb * gp), (cb * bp), 00,
-						(ca * rp), (ca * gp), (ca * bp), 00,
-						 01       ,  01       ,  01       , 01
+						cr, cr, cr, (cr || cg || cb || ca),
+						cg, cg, cg, (cr || cg || cb || ca),
+						cb, cb, cb, (cr || cg || cb || ca),
+						ca, ca, ca, (cr || cg || cb || ca),
+						00, 00, 00,  00
 					)
 
+/datum/controller/subsystem/sunlight/fire(resumed, init_tick_checks)
 
-
-
-
-/datum/controller/subsystem/sunlight/fire(resumed = FALSE, no_mc_tick = FALSE)
-
-	if(!(SSlighting.initialized))
-		return
 	nextBracket()
 
 	MC_SPLIT_TICK_INIT(3)
-	if (!no_mc_tick)
+	if(!init_tick_checks)
 		MC_SPLIT_TICK
-
-	while (wq_index <= workQueue.len)
-		var/atom/movable/sunlight_overlay/W = workQueue[wq_index]
-		wq_index += 1
+	var/i = 0
+	for (i in 1 to GLOB.SUNLIGHT_QUEUE_WORK.len)
+		var/atom/movable/sunlight_overlay/W = GLOB.SUNLIGHT_QUEUE_WORK[i]
 
 		W.check_state()
-		updateQueue |= W
+		GLOB.SUNLIGHT_QUEUE_UPDATE |= W
 
-		processed_overlays += 1
-
-		if (no_mc_tick)
+		if(init_tick_checks)
 			CHECK_TICK
 		else if (MC_TICK_CHECK)
 			break
+	if (i)
+		GLOB.SUNLIGHT_QUEUE_WORK.Cut(1, i+1)
+		i = 0
 
-	if (wq_index > 1)
-		workQueue.Cut(1, wq_index)
-		wq_index = 1
 
-	if (!no_mc_tick)
+	if(!init_tick_checks)
 		MC_SPLIT_TICK
-
-	while (uq_indeq <= updateQueue.len)
-		var/atom/movable/sunlight_overlay/U = updateQueue[uq_indeq]
-		uq_indeq += 1
+	for (i in 1 to GLOB.SUNLIGHT_QUEUE_UPDATE.len)
+		var/atom/movable/sunlight_overlay/U = GLOB.SUNLIGHT_QUEUE_UPDATE[i]
 
 		U.update_colour()
-
-		processed_colours += 1
-
-		if (no_mc_tick)
+		if(init_tick_checks)
 			CHECK_TICK
 		else if (MC_TICK_CHECK)
 			break
+	if (i)
+		GLOB.SUNLIGHT_QUEUE_UPDATE.Cut(1, i+1)
+		i = 0
 
-	if (uq_indeq > 1)
-		updateQueue.Cut(1, uq_indeq)
-		uq_indeq = 1
 
-	if (!no_mc_tick)
+	if(!init_tick_checks)
 		MC_SPLIT_TICK
-
-
 	/* this runs uber slow when we do a unique |= add in the sunlight calc loop, so do it here */
-	// cornerQueue = uniqueList(cornerQueue)
-	while (cq_indeq <= cornerQueue.len)
-		var/atom/movable/sunlight_overlay/U = cornerQueue[cq_indeq].sunlight_overlay
-		cq_indeq += 1
+	// GLOB.SUNLIGHT_QUEUE_CORNER = uniqueList(GLOB.SUNLIGHT_QUEUE_CORNER)
+	for (i in 1 to GLOB.SUNLIGHT_QUEUE_CORNER.len)
+		var/atom/movable/sunlight_overlay/U = GLOB.SUNLIGHT_QUEUE_CORNER[i].sunlight_overlay
 
+		if(!U)
+			continue
+		
 		var/turf/T = U.loc
 		if(!T.roof) /* unroofed turfs already are fullbright */
 			continue
 
 		U.update_corner()
 
-		processed_corners += 1
 
-		if (no_mc_tick)
+		if(init_tick_checks)
 			CHECK_TICK
 		else if (MC_TICK_CHECK)
 			break
+	if (i)
+		GLOB.SUNLIGHT_QUEUE_CORNER.Cut(1, i+1)
+		i = 0
 
-	if (cq_indeq > 1)
-		cornerQueue.Cut(1, cq_indeq)
-		cq_indeq = 1
 
-	if (!no_mc_tick)
-		MC_SPLIT_TICK
 
 /datum/controller/subsystem/sunlight/proc/nextBracket()
 	var/Time = station_time()
@@ -259,27 +217,23 @@ SUBSYSTEM_DEF(sunlight)
 
 
 /datum/controller/subsystem/sunlight/proc/updateLight(newTime)
-	light_color = "#808080"
-	// switch (newTime)
-	// 	if ("SUNRISE")
-	// 		light_color = "#ffd1b3"
-	// 		light_power = 0.3
-	// 	if ("MORNING")
-	// 		light_color = "#fff2e6"
-	// 		light_power = 0.5
-	// 	if ("DAYTIME")
-	// 		light_color = "#FFFFFF"
-	// 		light_power = 0.75
-	// 	if ("AFTERNOON")
-	// 		light_color = "#fff2e6"
-	// 		light_power = 0.5
-	// 	if ("SUNSET")
-	// 		light_color = "#ffcccc"
-	// 		light_power = 0.3
-	// 	if("NIGHTTIME")
-	// 		light_color = "#00111a"
-	// 		light_power = 0.15
-
+	
+	switch (newTime)
+		if ("SUNRISE")
+			screenColour = "#ffd1b3"
+		if ("MORNING")
+			screenColour = "#fff2e6"
+		if ("DAYTIME")
+			screenColour = "#FFFFFF"
+		if ("AFTERNOON")
+			screenColour = "#fff2e6"
+		if ("SUNSET")
+			screenColour = "#ffcccc"
+		if("NIGHTTIME")
+			screenColour = "#00111a"
+	/* for each thing, update the colour */
+	for (var/obj/screen/plane_master/lighting/SP in sunlighting_planes)
+		SP.color = screenColour
 
 #undef CYCLE_SUNRISE
 #undef CYCLE_MORNING

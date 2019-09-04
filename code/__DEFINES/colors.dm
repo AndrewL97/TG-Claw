@@ -5,7 +5,7 @@
 
 //#define COLOR_WHITE            "#EEEEEE"
 //#define COLOR_SILVER           "#C0C0C0"
-//#define COLOR_GRAY             "#808080"
+#define COLOR_GRAY             "#808080"  //why the fuckery is this commented out
 #define COLOR_FLOORTILE_GRAY   "#8D8B8B"
 #define COLOR_ALMOST_BLACK	   "#333333"
 //#define COLOR_BLACK            "#000000"

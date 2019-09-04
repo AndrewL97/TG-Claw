@@ -282,8 +282,8 @@
 	if (!inertia_moving)
 		inertia_next_move = world.time + inertia_move_delay
 		newtonian_move(Dir)
-	if (length(client_mobs_in_contents))
-		update_parallax_contents()
+	// if (length(client_mobs_in_contents))
+	// 	update_parallax_contents()
 
 	if (orbiters)
 		for (var/thing in orbiters)

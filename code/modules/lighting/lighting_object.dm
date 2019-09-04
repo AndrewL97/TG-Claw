@@ -1,13 +1,12 @@
 /atom/movable/lighting_object
 	name          = ""
 
-	anchored      = TRUE
-	blend_mode = BLEND_OVERLAY
+	anchored      	 = TRUE
+	blend_mode 		 = BLEND_ADD
 	icon             = LIGHTING_ICON
-	icon_state       = "transparent"
 	color            = LIGHTING_BASE_MATRIX
 	plane            = LIGHTING_PLANE
-	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	mouse_opacity 	 = MOUSE_OPACITY_TRANSPARENT
 	layer            = LIGHTING_LAYER
 	invisibility     = INVISIBILITY_LIGHTING
 
@@ -104,22 +103,12 @@
 	// This number is mostly arbitrary.
 	var/set_luminosity = max > 1e-6
 	#endif
-
-	if((rr & gr & br & ar) && (rg + gg + bg + ag + rb + gb + bb + ab == 8))
-	//anything that passes the first case is very likely to pass the second, and addition is a little faster in this case
-		icon_state = "transparent"
-		color = null
-	else if(!set_luminosity)
-		icon_state = "dark"
-		color = null
-	else
-		icon_state = null
 		color = list(
-			-rr, -rg, -rb, 00,
-			-gr, -gg, -gb, 00,
-			-br, -bg, -bb, 00,
-			-ar, -ag, -ab, 00,
-			01, 01, 01, 01
+			rr, rg, rb, 00,
+			gr, gg, gb, 00,
+			br, bg, bb, 00,
+			ar, ag, ab, 00,
+			00, 00, 00, 01
 		)
 
 	luminosity = set_luminosity

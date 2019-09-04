@@ -1,7 +1,6 @@
 /turf
 	icon = 'icons/turf/floors.dmi'
 	level = 1
-
 	var/intact = 1
 
 	// baseturfs can be either a list or a single turf type.
