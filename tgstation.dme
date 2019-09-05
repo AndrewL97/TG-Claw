@@ -1827,6 +1827,7 @@
 #include "code\modules\lighting\lighting_turf.dm"
 #include "code\modules\lighting\sunlight_debugVerbs.dm"
 #include "code\modules\lighting\sunlight_overlay.dm"
+#include "code\modules\lighting\sunlight_TODSteps.dm"
 #include "code\modules\mapping\dmm_suite.dm"
 #include "code\modules\mapping\map_template.dm"
 #include "code\modules\mapping\mapping_helpers.dm"

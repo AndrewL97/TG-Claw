@@ -1,16 +1,7 @@
-/*  6:00 AM 	- 	21600
-	6:45 AM 	- 	24300
-	11:45 AM 	- 	42300
-	4:45 PM 	- 	60300
-	9:45 PM 	- 	78300
-	10:30 PM 	- 	81000 */
-#define CYCLE_SUNRISE 	216000
-#define CYCLE_MORNING 	243000
-#define CYCLE_DAYTIME 	423000
-#define CYCLE_AFTERNOON 603000
-#define CYCLE_SUNSET 	783000
-#define CYCLE_NIGHTTIME 810000
-
+#define STEP_MORNING 0
+#define STEP_DAY 1
+#define STEP_EVENING 2
+#define STEP_NIGHT 3
 
 
 GLOBAL_VAR_INIT(GLOBAL_LIGHT_RANGE, 3)
@@ -18,6 +9,12 @@ GLOBAL_LIST_EMPTY(SUNLIGHT_QUEUE_WORK)   /* turfs to be stateChecked */
 GLOBAL_LIST_EMPTY(SUNLIGHT_QUEUE_UPDATE) /* turfs to have their colours updated via corners (filter out the unroofed dudes) */
 GLOBAL_LIST_EMPTY(SUNLIGHT_QUEUE_CORNER) /* turfs to have their colour/lights/etc updated */
 GLOBAL_LIST_EMPTY(SUNLIGHT_OVERLAYS)
+
+
+
+
+
+
 // /var/total_sunlight_overlays = 0
 // /var/sunlight_overlays_initialised = FALSE
 
@@ -53,13 +50,25 @@ SUBSYSTEM_DEF(sunlight)
 	flags = SS_TICKER
 	init_order = INIT_ORDER_SUNLIGHT
 
-	var/screenColour = COLOR_ASSEMBLY_BEIGE //rando spin
+	// var/screenColour = COLOR_ASSEMBLY_BEIGE //rando spin
+
 	var/list/obj/screen/plane_master/lighting/sunlighting_planes = list()
+
+	/* thanks ruskis */
+	var/datum/time_of_day/current_step_datum
+	var/datum/time_of_day/next_step_datum
+	var/current_step
+	var/next_step
+	var/step_started
+	var/step_finish
+	var/current_color
 
 	var/color = "#FFFFFF"
 	var/list/cornerColour = list()
 
 	var/currentTime
+	var/list/datum/time_of_day/time_cycle_steps = list(new /datum/time_of_day/morning(), new /datum/time_of_day/day(), \
+                                 new /datum/time_of_day/evening(), new /datum/time_of_day/night())
 
 datum/controller/subsystem/sunlight/stat_entry()
 	..("L:[GLOB.SUNLIGHT_QUEUE_WORK.len]|C:[GLOB.SUNLIGHT_QUEUE_CORNER.len]|O:[GLOB.SUNLIGHT_QUEUE_UPDATE.len]")
@@ -73,8 +82,9 @@ datum/controller/subsystem/sunlight/proc/fullPlonk()
 	to_chat(world, "<span class='boldannounce'>[msg]</span>")
 	log_world(msg)
 
-/datum/controller/subsystem/sunlight/Initialize()
+/datum/controller/subsystem/sunlight/Initialize(timeofday)
 	if(!initialized)
+		set_time_of_day(STEP_DAY)
 		InitializeTurfs()
 		fullPlonk()
 		initialized = TRUE
@@ -98,6 +108,23 @@ datum/controller/subsystem/sunlight/proc/fullPlonk()
 	to_chat(world, "<span class='boldannounce'>[msg]</span>")
 	log_world(msg)
 
+
+/datum/controller/subsystem/sunlight/proc/check_cycle()
+	if(world.time > step_finish)
+		set_time_of_day(current_step + 1)
+
+/datum/controller/subsystem/sunlight/proc/set_time_of_day(var/step)
+	if(step > time_cycle_steps.len)
+		step = STEP_DAY
+	step_started = world.time
+	current_step = step
+	current_step_datum = time_cycle_steps[current_step]
+	step_finish = current_step_datum.duration + world.time
+
+	next_step = current_step + 1
+	if(next_step > time_cycle_steps.len)
+		next_step = 1
+	next_step_datum = time_cycle_steps[next_step]
 
 /* set sunlight colour */
 /datum/controller/subsystem/sunlight/proc/setColour()
@@ -127,8 +154,9 @@ datum/controller/subsystem/sunlight/proc/fullPlonk()
 					)
 
 /datum/controller/subsystem/sunlight/fire(resumed, init_tick_checks)
-
+	check_cycle()
 	nextBracket()
+	setColour()
 
 	MC_SPLIT_TICK_INIT(3)
 	if(!init_tick_checks)
@@ -192,52 +220,15 @@ datum/controller/subsystem/sunlight/proc/fullPlonk()
 
 
 /datum/controller/subsystem/sunlight/proc/nextBracket()
-	var/Time = station_time()
-	var/newTime
-
-	switch (Time)
-		if (CYCLE_SUNRISE 	to CYCLE_MORNING - 1)
-			newTime = "SUNRISE"
-		if (CYCLE_MORNING 	to CYCLE_DAYTIME 	- 1)
-			newTime = "MORNING"
-		if (CYCLE_DAYTIME 	to CYCLE_AFTERNOON	- 1)
-			newTime = "DAYTIME"
-		if (CYCLE_AFTERNOON to CYCLE_SUNSET 	- 1)
-			newTime = "AFTERNOON"
-		if (CYCLE_SUNSET 	to CYCLE_NIGHTTIME - 1)
-			newTime = "SUNSET"
-		else
-			newTime = "NIGHTTIME"
-
-	if (newTime != currentTime)
-		currentTime = newTime
-		updateLight(currentTime)
-		setColour()
-		. = TRUE
-
-
-/datum/controller/subsystem/sunlight/proc/updateLight(newTime)
+	var/blend_amount = (world.time - step_started) / current_step_datum.duration
+	current_color = BlendRGB(current_step_datum.color, next_step_datum.color, blend_amount)
 	
-	switch (newTime)
-		if ("SUNRISE")
-			screenColour = "#ffd1b3"
-		if ("MORNING")
-			screenColour = "#fff2e6"
-		if ("DAYTIME")
-			screenColour = "#FFFFFF"
-		if ("AFTERNOON")
-			screenColour = "#fff2e6"
-		if ("SUNSET")
-			screenColour = "#ffcccc"
-		if("NIGHTTIME")
-			screenColour = "#00111a"
 	/* for each thing, update the colour */
 	for (var/obj/screen/plane_master/lighting/SP in sunlighting_planes)
-		SP.color = screenColour
+		SP.color = current_color
 
-#undef CYCLE_SUNRISE
-#undef CYCLE_MORNING
-#undef CYCLE_DAYTIME
-#undef CYCLE_AFTERNOON
-#undef CYCLE_SUNSET
-#undef CYCLE_NIGHTTIME
+
+#undef STEP_MORNING
+#undef STEP_DAY
+#undef STEP_EVENING
+#undef STEP_NIGHT

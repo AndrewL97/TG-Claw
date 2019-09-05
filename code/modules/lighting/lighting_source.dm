@@ -327,6 +327,6 @@
 
 
 #undef EFFECT_UPDATE
-#undef LUM_FALLOFF
+// #undef LUM_FALLOFF
 #undef REMOVE_CORNER
 #undef APPLY_CORNER

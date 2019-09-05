@@ -8,7 +8,7 @@
 /* thank you russians */
 /obj/screen/plane_master/lighting/New()
 	. = ..()
-	color = SSsunlight.screenColour
+	color = SSsunlight.current_color
 	SSsunlight.sunlighting_planes |= src
 
 /obj/screen/plane_master/lighting/Destroy()
