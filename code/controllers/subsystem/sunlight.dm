@@ -4,7 +4,7 @@
 #define STEP_NIGHT 3
 
 
-GLOBAL_VAR_INIT(GLOBAL_LIGHT_RANGE, 3)
+GLOBAL_VAR_INIT(GLOBAL_LIGHT_RANGE, 5)
 GLOBAL_LIST_EMPTY(SUNLIGHT_QUEUE_WORK)   /* turfs to be stateChecked */
 GLOBAL_LIST_EMPTY(SUNLIGHT_QUEUE_UPDATE) /* turfs to have their colours updated via corners (filter out the unroofed dudes) */
 GLOBAL_LIST_EMPTY(SUNLIGHT_QUEUE_CORNER) /* turfs to have their colour/lights/etc updated */
@@ -63,7 +63,7 @@ SUBSYSTEM_DEF(sunlight)
 	var/step_finish
 	var/current_color
 
-	var/color = "#FFFFFF"
+	var/color = SUNLIGHTING_BASE_MATRIX
 	var/list/cornerColour = list()
 
 	var/currentTime
@@ -127,36 +127,10 @@ datum/controller/subsystem/sunlight/proc/fullPlonk()
 	next_step_datum = time_cycle_steps[next_step]
 
 /* set sunlight colour */
-/datum/controller/subsystem/sunlight/proc/setColour()
-
-
-	color = list(
-		01, 01, 01, 01,
-		01, 01, 01, 01,
-		01, 01, 01, 01,
-		01, 01, 01, 01,
-		00, 00, 00, 00
-	)
-
-	/* get all variations of corner colours, so we dont have to recalc this */
-	/* I couldn't think of a neater way to do this */
-	for( var/cr = 0 to 1)
-		for( var/cg = 0 to 1)
-			for( var/cb = 0 to 1)
-				for( var/ca = 0 to 1)
-					cornerColour["[cr][cg][cb][ca]"] = \
-					list(
-						cr, cr, cr, (cr || cg || cb || ca),
-						cg, cg, cg, (cr || cg || cb || ca),
-						cb, cb, cb, (cr || cg || cb || ca),
-						ca, ca, ca, (cr || cg || cb || ca),
-						00, 00, 00,  00
-					)
 
 /datum/controller/subsystem/sunlight/fire(resumed, init_tick_checks)
 	check_cycle()
 	nextBracket()
-	setColour()
 
 	MC_SPLIT_TICK_INIT(3)
 	if(!init_tick_checks)
@@ -195,15 +169,11 @@ datum/controller/subsystem/sunlight/proc/fullPlonk()
 	if(!init_tick_checks)
 		MC_SPLIT_TICK
 	/* this runs uber slow when we do a unique |= add in the sunlight calc loop, so do it here */
-	// GLOB.SUNLIGHT_QUEUE_CORNER = uniqueList(GLOB.SUNLIGHT_QUEUE_CORNER)
+	GLOB.SUNLIGHT_QUEUE_CORNER = uniqueList(GLOB.SUNLIGHT_QUEUE_CORNER)
 	for (i in 1 to GLOB.SUNLIGHT_QUEUE_CORNER.len)
 		var/atom/movable/sunlight_overlay/U = GLOB.SUNLIGHT_QUEUE_CORNER[i].sunlight_overlay
 
-		if(!U)
-			continue
-		
-		var/turf/T = U.loc
-		if(!T.roof) /* unroofed turfs already are fullbright */
+		if(!U || U.state != 2)
 			continue
 
 		U.update_corner()
