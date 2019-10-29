@@ -24,6 +24,9 @@ GLOBAL_LIST_INIT(LIGHTING_CORNER_DIAGONAL, list(NORTHEAST, SOUTHEAST, SOUTHWEST,
 	var/cache_g  = LIGHTING_SOFT_THRESHOLD
 	var/cache_b  = LIGHTING_SOFT_THRESHOLD
 	var/cache_mx = 0
+	
+	var/list/globAffect = list() /* if we are affected by a global light, so the sunlight_overlay can compensate */
+	var/sunFalloff = 0
 
 /datum/lighting_corner/New(var/turf/new_turf, var/diagonal)
 	. = ..()
@@ -141,3 +144,10 @@ GLOBAL_LIST_INIT(LIGHTING_CORNER_DIAGONAL, list(NORTHEAST, SOUTHEAST, SOUTHWEST,
 	stack_trace("Ok, Look, TG, I need you to find whatever fucker decided to call qdel on a fucking lighting corner, then tell him very nicely and politely that he is 100% retarded and needs his head checked. Thanks. Send them my regards by the way.")
 
 	return ..()
+
+/* get stronkest sunFalloff */
+/datum/lighting_corner/proc/getSunFalloff()
+	sunFalloff = 0
+	var/atom/movable/sunlight_overlay/S
+	for(S in globAffect)
+		sunFalloff = sunFalloff < globAffect[S] ? globAffect[S] : sunFalloff

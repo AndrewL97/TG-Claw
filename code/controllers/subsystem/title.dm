@@ -6,7 +6,6 @@ SUBSYSTEM_DEF(title)
 	var/icon/icon
 	var/icon/previous_icon
 	var/turf/closed/indestructible/splashscreen/splash_turf
-
 /datum/controller/subsystem/title/PreInit()
 	if(file_path && icon)
 		return

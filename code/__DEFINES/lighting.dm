@@ -16,12 +16,33 @@
 #define LIGHTING_BASE_MATRIX \
 	list                     \
 	(                        \
-		1, 1, 1, 0, \
-		1, 1, 1, 0, \
-		1, 1, 1, 0, \
-		1, 1, 1, 0, \
+		0, 0, 0, 0, 		 \
+		0, 0, 0, 0, 		 \
+		0, 0, 0, 0, 		 \
+		0, 0, 0, 0, 		 \
 		0, 0, 0, 1           \
 	)                        \
+
+#define SUNLIGHTING_BASE_MATRIX \
+	list                     	\
+		(						\
+			01, 01, 01, 01,	 	\
+			01, 01, 01, 01,	 	\
+			01, 01, 01, 01,	 	\
+			01, 01, 01, 01,		\
+			00, 00, 00, 00		\
+		)                  		\
+
+#define SUNLIGHTING_DARK_MATRIX \
+	list                     	\
+		(						\
+			00, 00, 00, 00,	 	\
+			00, 00, 00, 00,	 	\
+			00, 00, 00, 00,	 	\
+			00, 00, 00, 00,		\
+			00, 00, 00, 00		\
+		)                  		\
+
 
 
 //Some defines to generalise colours used in lighting.

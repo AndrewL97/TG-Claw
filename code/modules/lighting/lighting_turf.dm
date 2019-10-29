@@ -17,6 +17,14 @@
 		L = thing
 		L.vis_update()
 
+	/* update sunlight */
+	var/datum/lighting_corner/C
+	var/atom/movable/sunlight_overlay/S
+	for(C in corners)
+		for(S in C.globAffect)
+			GLOB.SUNLIGHT_QUEUE_WORK |= S
+
+
 /turf/proc/lighting_clear_overlay()
 	if (lighting_object)
 		qdel(lighting_object, TRUE)
