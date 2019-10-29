@@ -42,7 +42,7 @@
 	icon_state = "supafly"
 	item_state = "supafly"
 	flags_cover = HEADCOVERSEYES | HEADCOVERSMOUTH
-	armor = list(melee = 55, bullet = 5, laser = 0, energy = 0, bomb = 0, bio = 0, rad = 0, fire = 0, acid = 0)
+	armor = list(melee = 40, bullet = 25, laser = 15, energy = 10, bomb = 16, bio = 20, rad = 0, fire = 50, acid = 0)
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|HIDEHAIR|HIDEFACIALHAIR
 	strip_delay = 20
 
@@ -52,10 +52,24 @@
 	icon_state = "yankee"
 	item_state = "yankee"
 	flags_cover = HEADCOVERSEYES | HEADCOVERSMOUTH
-	armor = list(melee = 50, bullet = 10, laser = 0, energy = 0, bomb = 10, bio = 0, rad = 0, fire = 0, acid = 0)
+	armor = list(melee = 40, bullet = 25, laser = 15, energy = 10, bomb = 16, bio = 20, rad = 0, fire = 50, acid = 0)
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|HIDEHAIR|HIDEFACIALHAIR
 	strip_delay = 30
 
+/obj/item/clothing/head/helmet/f13/fiend
+	name = "fiend helmet"
+	desc = "A leather cap cobbled together adorned with a bighorner skull, perfect for any drug-fueled frenzy."
+	icon_state = "fiend"
+	item_state = "fiend"
+	armor = list("melee" = 40, "bullet" = 25, "laser" = 15, "energy" = 10, "bomb" = 16, "bio" = 20, "rad" = 0, "fire" = 50, "acid" = 0)
+	flags_inv = HIDEEARS|HIDEHAIR
+
+/obj/item/clothing/head/helmet/f13/vaquerohat
+	name = "vaquero hat"
+	desc = "An old sombrero worn by Vaqueros to keep off the harsh sun."
+	icon_state = "vaquerohat"
+	item_state = "vaquerohat"
+	armor = list("melee" = 10, "bullet" = 15, "laser" = 10, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 20, "acid" = 0)
 
 /obj/item/clothing/head/helmet/f13/khan
 	name = "Great Khan helmet"
@@ -66,13 +80,12 @@
 	flags_inv = HIDEEARS|HIDEHAIR
 	strip_delay = 20
 
-
 /obj/item/clothing/head/helmet/f13/ranger/old
 	name = "old ranger helmet"
 	desc = "An old military helmet, commonly worn by Desert Rangers, that went through the fire and the flames, saving a single life amongst heavy bloodshed.<br>This particular helmet has a \"Forgive me mama\" inscription on the side."
 	icon_state = "oldranger"
 	item_state = "oldranger"
-	armor = list(melee = 40, bullet = 20, laser = 20, energy = 20, bomb = 20, bio = 0, rad = 40, fire = 30, acid = 10)
+	armor = list(melee = 40, bullet = 20, laser = 20, energy = 20, bomb = 20, bio = 0, rad = 30, fire = 30, acid = 10)
 	glass_colour_type = /datum/client_colour/glass_colour/lightgreen
 
 /obj/item/clothing/head/f13/strange
@@ -81,7 +94,7 @@
 	icon = 'icons/fallout/clothing/hats.dmi'
 	icon_state = "strange"
 	item_state = "helmet"
-	armor = list(melee = 40, bullet = 20, laser = 40, energy = 40, bomb = 20, bio = 100, rad = 50, fire = 90, acid = 100)
+	armor = list(melee = 40, bullet = 20, laser = 40, energy = 40, bomb = 20, bio = 100, rad = 40, fire = 90, acid = 100)
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|HIDEHAIR|HIDEFACIALHAIR
 	cold_protection = HEAD
 	min_cold_protection_temperature = SPACE_HELM_MIN_TEMP_PROTECT
@@ -347,3 +360,32 @@
 	item_state = "welding"
 	tint = 1
 	armor = list(melee = 40, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 0, rad = 0, fire = 30, acid = 0)
+
+/obj/item/clothing/head/f13/town
+	name = "town tricorn"
+	desc = "Why are there tricorns in the desert again?"
+	icon_state = "tricorn"
+	item_state = "dethat"
+	flags_inv = HIDEHAIR
+	armor = list("melee" = 40, "bullet" = 30, "laser" = 20, "energy" = 40, "bomb" = 25, "bio" = 40, "rad" = 30, "fire" = 80, "acid" = 0)
+
+/obj/item/clothing/head/f13/town/mayor
+	name = "mayoral tricorn"
+	desc = "A tricorn in the desert.  Stranger things have happened."
+
+/obj/item/clothing/head/f13/town/big
+	name = "big hat"
+	desc = "It's a big hat."
+	icon_state = "bigcowboyhat"
+
+/obj/item/clothing/head/f13/town/deputy
+	name = "deputy hat"
+	desc = "A black cowboy hat."
+	icon_state = "deputyhat"
+	armor = list("melee" = 50, "bullet" = 40, "laser" = 25, "energy" = 40, "bomb" = 25, "bio" = 40, "rad" = 35, "fire" = 80, "acid" = 0)
+
+/obj/item/clothing/head/f13/town/sheriff
+	name = "sheriff hat"
+	desc = "A black cowboy hat with a snakeskin band."
+	icon_state = "sheriffhat"
+	armor = list("melee" = 60, "bullet" = 50, "laser" = 30, "energy" = 40, "bomb" = 25, "bio" = 40, "rad" = 40, "fire" = 80, "acid" = 0)

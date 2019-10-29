@@ -1,7 +1,8 @@
 /client/proc/cmd_admin_drop_everything(mob/M in GLOB.mob_list)
 	set category = null
 	set name = "Drop Everything"
-	if(!check_rights(R_ADMIN))
+
+	if(!check_rights(R_VAREDIT))
 		return
 
 	var/confirm = alert(src, "Make [M] drop everything?", "Message", "Yes", "No")
@@ -65,7 +66,7 @@
 		return
 
 	if (!sender)
-		sender = input("Who is the message from?", "Sender") as null|anything in list("CentCom","Syndicate")
+		sender = input("Who is the message from?", "Sender") as null|anything in list("High Command","Elders","Legion","Unknown","Benefactor")
 		if(!sender)
 			return
 
@@ -77,7 +78,7 @@
 
 	log_admin("[key_name(src)] replied to [key_name(H)]'s [sender] message with the message [input].")
 	message_admins("[key_name_admin(src)] replied to [key_name_admin(H)]'s [sender] message with: \"[input]\"")
-	to_chat(H, "You hear something crackle in your ears for a moment before a voice speaks.  \"Please stand by for a message from [sender == "Syndicate" ? "your benefactor" : "Central Command"].  Message as follows[sender == "Syndicate" ? ", agent." : ":"] <span class='bold'>[input].</span> Message ends.\"")
+	to_chat(H, "You hear something crackle in your ears for a moment before a voice speaks.  \"Please stand by for a message from [sender == "Benefactor" ? "your benefactor" : sender == "Elders" ? "The Elders" : sender == "Legion" ? "a Legion Legate" : sender == "Unknown" ? "an Unknown Entity" : "High Command"].  Message as follows[sender == "Benefactor" ? ", agent." : ":"] <span class='bold'>[input].</span> Message ends.\"")
 
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Headset Message") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
@@ -192,7 +193,7 @@
 /client/proc/cmd_admin_godmode(mob/M in GLOB.mob_list)
 	set category = "Special Verbs"
 	set name = "Godmode"
-	if(!check_rights(R_ADMIN))
+	if(!check_rights(R_VAREDIT))
 		return
 
 	M.status_flags ^= GODMODE
@@ -506,9 +507,6 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set category = "Fun"
 	set name = "Add Custom AI law"
 
-	if(!check_rights(R_ADMIN))
-		return
-
 	var/input = input(usr, "Please enter anything you want the AI to do. Anything. Serious.", "What?", "") as text|null
 	if(!input)
 		return
@@ -549,9 +547,6 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set category = "Special Verbs"
 	set name = "Create Command Report"
 
-	if(!check_rights(R_ADMIN))
-		return
-
 	var/input = input(usr, "Enter a Command Report. Ensure it makes sense IC.", "What?", "") as message|null
 	if(!input)
 		return
@@ -574,9 +569,6 @@ Traitors and the like can also be revived with the previous role mostly intact.
 /client/proc/cmd_change_command_name()
 	set category = "Special Verbs"
 	set name = "Change Command Name"
-
-	if(!check_rights(R_ADMIN))
-		return
 
 	var/input = input(usr, "Please input a new name for Central Command.", "What?", "") as text|null
 	if(!input)
@@ -830,9 +822,6 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set name = "Set Security Level"
 	set desc = "Changes the security level. Announcement only, i.e. setting to Delta won't activate nuke"
 
-	if(!check_rights(R_ADMIN))
-		return
-
 	var/level = input("Select security level to change to","Set Security Level") as null|anything in list("green","blue","red","delta")
 	if(level)
 		set_security_level(level)
@@ -845,8 +834,6 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set name = "Toggle Nuke"
 	set category = "Fun"
 	set popup_menu = 0
-	if(!check_rights(R_DEBUG))
-		return
 
 	if(!N.timing)
 		var/newtime = input(usr, "Set activation timer.", "Activate Nuke", "[N.timer_set]") as num|null
@@ -865,9 +852,6 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 /client/proc/create_outfits()
 	set category = "Debug"
 	set name = "Create Custom Outfit"
-
-	if(!check_rights(R_DEBUG))
-		return
 
 	holder.create_outfit()
 
@@ -1042,9 +1026,6 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 	set name = "Toggle Combo HUD"
 	set desc = "Toggles the Admin Combo HUD (antag, sci, med, eng)"
 
-	if(!check_rights(R_ADMIN))
-		return
-
 	var/adding_hud = !has_antag_hud()
 
 	for(var/hudtype in list(DATA_HUD_SECURITY_ADVANCED, DATA_HUD_MEDICAL_ADVANCED, DATA_HUD_DIAGNOSTIC_ADVANCED)) // add data huds
@@ -1082,12 +1063,12 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 /client/proc/run_weather()
 	set category = "Fun"
 	set name = "Run Weather"
-	set desc = "Triggers a weather on the z-level you choose."
+	set desc = "Triggers a weather on the z-level you choose with a custom duration."
 
 	if(!holder)
 		return
 
-	var/weather_type = input("Choose a weather", "Weather")  as null|anything in subtypesof(/datum/weather)
+	var/datum/weather/weather_type = input("Choose a weather", "Weather")  as null|anything in subtypesof(/datum/weather)
 	if(!weather_type)
 		return
 
@@ -1097,20 +1078,23 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 			return
 		z_level = src.mob.z
 
-	SSweather.run_weather(weather_type, z_level)
-
-	message_admins("[key_name_admin(usr)] started weather of type [weather_type] on the z-level [z_level].")
-	log_admin("[key_name(usr)] started weather of type [weather_type] on the z-level [z_level].")
-	SSblackbox.record_feedback("tally", "admin_verb", 1, "Run Weather")
+	var/forced_duration = input("Duration of the weather in deciseconds? Leave blank to use default weather duration.", "Weather duration")  as num|null
+	if(forced_duration && isnum(forced_duration))
+		SSweather.run_weather(weather_type, z_level, forced_duration)
+		message_admins("[key_name_admin(usr)] started weather of type [weather_type] on the z-level [z_level] with duration of [forced_duration] deciseconds.")
+		log_admin("[key_name(usr)] started weather of type [weather_type] on the z-level [z_level] with duration of [forced_duration] deciseconds.")
+		SSblackbox.record_feedback("tally", "admin_verb", 1, "Run Weather")
+	else
+		SSweather.run_weather(weather_type, z_level)
+		message_admins("[key_name_admin(usr)] started weather of type [weather_type] on the z-level [z_level].")
+		log_admin("[key_name(usr)] started weather of type [weather_type] on the z-level [z_level].")
+		SSblackbox.record_feedback("tally", "admin_verb", 1, "Run Weather")
 
 /client/proc/mass_zombie_infection()
 	set category = "Fun"
 	set name = "Mass Zombie Infection"
 	set desc = "Infects all humans with a latent organ that will zombify \
 		them on death."
-
-	if(!check_rights(R_ADMIN))
-		return
 
 	var/confirm = alert(src, "Please confirm you want to add latent zombie organs in all humans?", "Confirm Zombies", "Yes", "No")
 	if(confirm != "Yes")
@@ -1127,8 +1111,6 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 	set category = "Fun"
 	set name = "Mass Zombie Cure"
 	set desc = "Removes the zombie infection from all humans, returning them to normal."
-	if(!check_rights(R_ADMIN))
-		return
 
 	var/confirm = alert(src, "Please confirm you want to cure all zombies?", "Confirm Zombie Cure", "Yes", "No")
 	if(confirm != "Yes")
@@ -1145,9 +1127,6 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 	set category = "Fun"
 	set name = "Polymorph All"
 	set desc = "Applies the effects of the bolt of change to every single mob."
-
-	if(!check_rights(R_ADMIN))
-		return
 
 	var/confirm = alert(src, "Please confirm you want polymorph all mobs?", "Confirm Polymorph", "Yes", "No")
 	if(confirm != "Yes")
@@ -1179,9 +1158,6 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 	set name = "Show Tip"
 	set desc = "Sends a tip (that you specify) to all players. After all \
 		you're the experienced player here."
-
-	if(!check_rights(R_ADMIN))
-		return
 
 	var/input = input(usr, "Please specify your tip that you want to send to the players.", "Tip", "") as message|null
 	if(!input)
@@ -1281,7 +1257,7 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 	set category = "Debug"
 	set name = "Modify goals"
 
-	if(!check_rights(R_ADMIN))
+	if(!check_rights(R_FUN))
 		return
 
 	holder.modify_goals()
@@ -1310,7 +1286,8 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 /client/proc/smite(mob/living/carbon/human/target as mob)
 	set name = "Smite"
 	set category = "Fun"
-	if(!check_rights(R_ADMIN))
+
+	if(!check_rights(R_FUN))
 		return
 
 	var/list/punishment_list = list(ADMIN_PUNISHMENT_LIGHTNING, ADMIN_PUNISHMENT_BRAINDAMAGE, ADMIN_PUNISHMENT_GIB, ADMIN_PUNISHMENT_BSA, ADMIN_PUNISHMENT_FIREBALL, ADMIN_PUNISHMENT_ROD, ADMIN_PUNISHMENT_SUPPLYPOD)
@@ -1367,16 +1344,14 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 
 
 /client/proc/trigger_centcom_recall()
-	if(!check_rights(R_ADMIN))
-		return
 	var/message = pick(GLOB.admiral_messages)
 	message = input("Enter message from the on-call admiral to be put in the recall report.", "Admiral Message", message) as text|null
 
 	if(!message)
 		return
 
-	message_admins("[key_name_admin(usr)] triggered a CentCom recall, with the admiral message of: [message]")
-	log_game("[key_name(usr)] triggered a CentCom recall, with the message of: [message]")
+	message_admins("[key_name_admin(usr)] triggered a Vault-Tec recall, with the admiral message of: [message]")
+	log_game("[key_name(usr)] triggered a Vault-Tec recall, with the message of: [message]")
 	SSshuttle.centcom_recall(SSshuttle.emergency.timer, message)
 
 /client/proc/cmd_admin_check_player_exp()	//Allows admins to determine who the newer players are.
@@ -1390,7 +1365,7 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 		return
 
 	var/list/msg = list()
-	msg += "<html><head><title>Playtime Report</title></head><body>Playtime:<BR><UL>"
+	msg += "<html><head><title>Playtime Report</title></head><body>Playtime: <BR><UL>"
 	for(var/client/C in GLOB.clients)
 		msg += "<LI> - [key_name_admin(C)]: <A href='?_src_=holder;[HrefToken()];getplaytimewindow=[REF(C.mob)]'>" + C.get_exp_living() + "</a></LI>"
 	msg += "</UL></BODY></HTML>"
@@ -1407,7 +1382,7 @@ GLOBAL_LIST_EMPTY(custom_outfits) //Admin created outfits
 		return
 
 	var/list/body = list()
-	body += "<html><head><title>Playtime for [C.key]</title></head><BODY><BR>Playtime:"
+	body += "<html><head><title>Playtime for [C.key]</title></head><BODY><BR>Playtime: "
 	body += C.get_exp_report()
 	body += "<A href='?_src_=holder;[HrefToken()];toggleexempt=[REF(C)]'>Toggle Exempt status</a>"
 	body += "</BODY></HTML>"

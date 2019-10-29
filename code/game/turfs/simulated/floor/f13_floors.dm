@@ -6,16 +6,6 @@
    just spawn more.
 */
 
-/turf/open/floor/plating/f13/outside
-	name = "What the fuck mappers? why is this here"
-	desc = "If found, scream at the github repo about this"
-	icon_state = "wasteland1"
-	icon = 'icons/turf/f13desert.dmi'
-	light_range = 3
-	light_power = 0.75
-
-
-
 /turf/open/floor/plating/f13 // don't use this for anything, /f13/ is essentially just the new /unsimulated/ but for planets and should probably be phased out entirely everywhere
 	gender = PLURAL
 	baseturfs = /turf/open/floor/plating/f13
@@ -40,8 +30,8 @@
 	desc = "If found, scream at the github repo about this"
 	icon_state = "wasteland1"
 	icon = 'icons/turf/f13desert.dmi'
-	light_range = 3
-	light_power = 0.75
+	turf_light_range = 3
+	turf_light_power = 0.75
 
 /* Outside turfs get global lighting */
 /turf/open/floor/plating/f13/outside/Initialize()
@@ -119,7 +109,7 @@
 	icon_state = "outermiddle"
 
 /turf/open/floor/wood/f13
-	icon = 'icons/turf/f13floorsmisc.dmi'
+	icon = 'icons/turf/floors.dmi'
 	icon_state = "housewood1"
 
 	New()
@@ -128,8 +118,7 @@
 			icon_state = "housewood[rand(1,3)]"
 
 /turf/open/floor/wood/f13/carpet
-	icon = 'icons/turf/fo13floorsmisc2.dmi'
-	icon_state="carpet"
+	icon_state = "carpet"
 
 /turf/open/floor/wood/f13/old
 	name = "wood planks"
@@ -138,75 +127,62 @@
 /turf/open/floor/wood/f13/old/ruinedcornerendbr	//WHAT THE FUCK IS THIS
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandcornerbr"
 
 /turf/open/floor/wood/f13/old/ruinedcornerendbl
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandcornerbl"
 
 /turf/open/floor/wood/f13/old/ruinedcornerendtr
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandcornertr"
 
 /turf/open/floor/wood/f13/old/ruinedcornerendtl
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandcornertl"
 
 /turf/open/floor/wood/f13/old/ruinedcornerbr
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandmorecornerbr"
 
 /turf/open/floor/wood/f13/old/ruinedcornerbl
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandmorecornerbl"
 
 /turf/open/floor/wood/f13/old/ruinedcornertr
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandmorecornertr"
 
 /turf/open/floor/wood/f13/old/ruinedcornertl
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandmorecornertl"
 
 /turf/open/floor/wood/f13/old/ruinedstraightsouth
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandsouth"
 
 /turf/open/floor/wood/f13/old/ruinedstraightnorth
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandnorth"
 
 /turf/open/floor/wood/f13/old/ruinedstraighteast
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandeast"
 
 /turf/open/floor/wood/f13/old/ruinedstraightwest
 	name = "wood planks"
 	desc = "Rotting wooden flooring, with a mix of dirt."
-	icon = 'icons/turf/f13floorsmisc.dmi'
 	icon_state = "housewastelandwest"
-
 
 /turf/open/floor/wood/f13/stage_tl
 	icon_state = "housewood_stage_top_left"
@@ -225,8 +201,8 @@
 /turf/open/floor/wood/f13/stage_br
 	icon_state = "housewood_stage_bottom_right"
 
-
 #define SHROOM_SPAWN	1
+
 /turf/open/floor/plating/f13/inside/mountain
 	name = "mountain"
 	desc = "Damp cave flooring."
@@ -254,7 +230,6 @@
 	icon = 'icons/turf/f13floors2.dmi'
 	icon_state = "vault_floor"
 	planetary_atmos = FALSE // They're _inside_ a vault.
-
 
 /turf/open/floor/plasteel/f13/vault_floor/plating
 	icon_state = "plating"

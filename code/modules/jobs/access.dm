@@ -323,6 +323,8 @@
 			return "Cloning Room"
 		if(ACCESS_BOS)
 			return "BOS Access"
+		if(ACCESS_NCR)
+			return "NCR Access"
 
 /proc/get_centcom_access_desc(A)
 	switch(A)
@@ -351,9 +353,10 @@
 				"Veteran Decanus", "Vexillarius", "Decanus", "Veteran Legionnaire", "Legionary",
 				"NCR Lieutenant", "NCR Sergeant", "NCR Trooper", "NCR Recruit",
 				"NCR Veteran Ranger", "NCR Patrol Ranger", "NCR Recon Ranger",
+				"NCR Scout", "NCR Scout Sergeant", "NCR Scout Lieutenant",
 				"Chief of Security", "Vault-tec Doctor", "Vault-tec Scientist",
 				"Vault-tec Security", "Vault-tec Engineer", "Vault Dweller",
-				"Wastelander", "Raider", "Pusher", "Preacher")
+				"Wastelander", "Raider", "Great Khan", "Preacher")
 
 /proc/get_all_job_icons() //For all existing HUD icons
 	return get_all_jobs() + list("Prisoner")

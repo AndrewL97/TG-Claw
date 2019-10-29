@@ -4,14 +4,13 @@
 	var/open_space = 0
 //	var/list/ambientmusic = list('sound/misc/null.ogg')
 //	var/ambience_area =  list('sound/f13ambience/wasteland.ogg')
-	ambientsounds = list()
+	ambientsounds = list('sound/misc/null.ogg')
 	var/environment = -1
 	var/grow_chance = 100
 
 /area/f13
 	name = "error"
 	icon_state = "error"
-	icon = 'icons/fallout/turfs/areas.dmi'
 	has_gravity = 1
 //	requires_power = 0
 
@@ -111,8 +110,6 @@
 //	ambientmusic = list('sound/f13music/fo2_village.ogg','sound/f13music/fo2_wasteland.ogg','sound/misc/null.ogg')
 	ambientsounds = list('sound/f13ambience/dog_distant_1.ogg','sound/f13ambience/dog_distant_2.ogg','sound/f13ambience/dog_distant_3.ogg', \
 	'sound/f13ambience/bird_1.ogg','sound/f13ambience/bird_2.ogg','sound/f13ambience/bird_3.ogg','sound/f13ambience/bird_4.ogg')
-	outdoors = 1
-	open_space = 1
 	blob_allowed = 0
 	environment = 15
 	grow_chance = 5
@@ -124,8 +121,6 @@
 //	ambientmusic = list('sound/f13music/fo2_outpost.ogg','sound/f13music/fo2_brotherhood.ogg','sound/misc/null.ogg')
 	ambientsounds = list('sound/f13ambience/battle_1.ogg','sound/f13ambience/battle_2.ogg','sound/f13ambience/battle_3.ogg', \
 	'sound/f13ambience/bird_1.ogg','sound/f13ambience/bird_2.ogg','sound/f13ambience/bird_3.ogg','sound/f13ambience/bird_4.ogg')
-	outdoors = 1
-	open_space = 1
 	blob_allowed = 0
 	environment = 16
 	grow_chance = 5
@@ -365,6 +360,7 @@
 	blob_allowed = 0
 	environment = 4
 	grow_chance = 5
+	requires_power = FALSE
 
 /area/f13/legion
 	name = "Legion"

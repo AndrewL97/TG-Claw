@@ -19,13 +19,13 @@
 /obj/item/gun/energy/laser/retro
 	name ="retro laser gun"
 	icon_state = "retro"
-	desc = "An older model of the basic lasergun, no longer used by Nanotrasen's private security or military forces. Nevertheless, it is still quite deadly and easy to maintain, making it a favorite amongst pirates and other outlaws."
+	desc = "An older model of the basic lasergun, no longer used by Vault-Tec's private security or military forces. Nevertheless, it is still quite deadly and easy to maintain, making it a favorite amongst pirates and other outlaws."
 	ammo_x_offset = 3
 
 /obj/item/gun/energy/laser/retro/old
 	name ="laser gun"
 	icon_state = "retro"
-	desc = "First generation lasergun, developed by Nanotrasen. Suffers from ammo issues but its unique ability to recharge its ammo without the need of a magazine helps compensate. You really hope someone has developed a better lasergun while you were in cyro."
+	desc = "First generation lasergun, developed by Vault-Tec. Suffers from ammo issues but its unique ability to recharge its ammo without the need of a magazine helps compensate. You really hope someone has developed a better lasergun while you were in cyro."
 	ammo_type = list(/obj/item/ammo_casing/energy/lasergun/old)
 	ammo_x_offset = 3
 
@@ -169,6 +169,7 @@
 	fire_delay = 2
 	ammo_type = list(/obj/item/ammo_casing/energy/laser/pistol)
 	cell_type = /obj/item/stock_parts/cell/ammo/ec
+	slot_flags = ITEM_SLOT_BELT
 
 /obj/item/gun/energy/laser/scatter
 	name = "tribeam laser rifle"
@@ -210,66 +211,4 @@
 	w_class = WEIGHT_CLASS_NORMAL
 	weapon_weight = WEAPON_LIGHT
 	cell_type = /obj/item/stock_parts/cell/ammo/ec
-
-
-//projectiles
-/obj/item/projectile/beam/laser/lasgun
-	name = "laser beam"
-	damage = 35
-	armour_penetration = 0
-
-/obj/item/projectile/beam/laser/pistol
-	name = "laser beam"
-	damage = 20
-
-/obj/item/projectile/beam/laser/tribeam
-	name = "tribeam laser"
-	damage = 15
-
-/obj/item/projectile/plasma
-	name = "plasma clot"
-	icon_state = "plasma_clot"
-	damage = 50
-
-/obj/item/projectile/plasma/pistol
-	damage = 45
-
-/obj/item/projectile/plasma/scatter
-	damage = 25
-
-//Casings
-//plasma
-/obj/item/ammo_casing/energy/plasma
-	projectile_type = /obj/item/projectile/plasma
-	select_name = "plasma burst"
-	icon_state = "neurotoxin"
-	fire_sound = 'sound/weapons/plasma_cutter.ogg'
-	delay = 5
-	e_cost = 75
-
-/obj/item/ammo_casing/energy/plasma/scatter
-	projectile_type = /obj/item/projectile/plasma/scatter
-	pellets = 3
-	variance = 14
-	select_name = "scatter"
-	e_cost = 150
-
-/obj/item/ammo_casing/energy/plasma/pistol
-	projectile_type = /obj/item/projectile/plasma/pistol
-	e_cost = 75
-
-//laser
-/obj/item/ammo_casing/energy/laser/scatter
-	projectile_type = /obj/item/projectile/beam/laser/tribeam
-	pellets = 3
-	variance = 14
-	select_name = "scatter"
-	e_cost = 75
-
-/obj/item/ammo_casing/energy/laser/pistol
-	projectile_type = /obj/item/projectile/beam/laser/pistol
-	e_cost = 10
-
-/obj/item/ammo_casing/energy/laser/lasgun
-	projectile_type = /obj/item/projectile/beam/laser/lasgun
-	e_cost = 50
+	slot_flags = ITEM_SLOT_BELT

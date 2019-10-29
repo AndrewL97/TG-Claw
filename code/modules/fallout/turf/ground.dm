@@ -10,12 +10,12 @@
 	icon_state = "wasteland1"
 	intact = 1
 	planetary_atmos = TRUE
+
 	var/flags = NONE
 	var/obj/structure/flora/turfPlant = null
 
 /turf/open/indestructible/ground/New()
 	..()
-
 	baseturfs = src.type
 	baseturf_icon = icon_state
 	baseturf_dir = dir
@@ -48,29 +48,28 @@
 //////////////////////////////////////////////////////////////////////
 
 /turf/open/indestructible/ground/outside
-	light_range = 3
-	light_power = 0.75
+	turf_light_range = 3
+	turf_light_power = 0.75
 
 /turf/open/indestructible/ground/outside/Initialize()
 	. = ..()
 	flags_2 |= GLOBAL_LIGHT_TURF_2
 
-#define GRASS_SPONTANEOUS 		2
-#define GRASS_WEIGHT 			4
-#define LUSH_PLANT_SPAWN_LIST list(/obj/structure/flora/grass/wasteland = 10, /obj/structure/flora/wasteplant/wild_broc = 7, /obj/structure/flora/wasteplant/wild_feracactus = 5, /obj/structure/flora/wasteplant/wild_mutfruit = 5, /obj/structure/flora/wasteplant/wild_xander = 5, /obj/structure/flora/wasteplant/wild_agave = 5, /obj/structure/flora/tree/joshua = 3, /obj/structure/flora/tree/cactus = 2, /obj/structure/flora/tree/wasteland = 2)
-#define DESOLATE_PLANT_SPAWN_LIST list(/obj/structure/flora/grass/wasteland = 1)
-
+#define GRASS_SPONTANEOUS_GROUND 		2
+#define GRASS_WEIGHT_GROUND			4
+#define LUSH_PLANT_SPAWN_LIST_GROUND list(/obj/structure/flora/grass/wasteland = 10, /obj/structure/flora/wasteplant/wild_broc = 7, /obj/structure/flora/wasteplant/wild_feracactus = 5, /obj/structure/flora/wasteplant/wild_mutfruit = 5, /obj/structure/flora/wasteplant/wild_xander = 5, /obj/structure/flora/wasteplant/wild_agave = 5, /obj/structure/flora/tree/joshua = 3, /obj/structure/flora/tree/cactus = 2, /obj/structure/flora/tree/wasteland = 2)
+#define DESOLATE_PLANT_SPAWN_LIST_GROUND list(/obj/structure/flora/grass/wasteland = 1)
 
 /turf/open/indestructible/ground/outside/desert
 	name = "desert"
 	icon_state = "wasteland"
 //	step_sounds = list("human" = "dirtfootsteps")
 //	allowed_plants = list(/obj/item/seeds/poppy/broc, /obj/item/seeds/xander, /obj/item/seeds/mutfruit, \
-	/obj/item/seeds/feracactus, /obj/item/seeds/corn,/obj/item/seeds/shroom, /obj/item/seeds/agave)
+//	/obj/item/seeds/feracactus, /obj/item/seeds/corn,/obj/item/seeds/shroom, /obj/item/seeds/agave)
 	slowdown = 1
 	flags_1 = CAN_HAVE_NATURE | ADJACENCIES_OVERLAY
 	var/dug = FALSE				//FALSE = has not yet been dug, TRUE = has already been dug
-	var/pit_sand = 2
+	var/pit_sand = 1
 	var/storedindex = 0			//amount of stored items
 	var/mob/living/gravebody	//is there a body in the pit?
 	var/obj/structure/closet/crate/coffin/gravecoffin //or maybe a coffin?
@@ -79,7 +78,7 @@
 	var/unburylevel = 0
 
 /turf/open/indestructible/ground/outside/desert/Initialize()
-	..()
+	. = ..()
 	if(!((locate(/obj/structure) in src) || (locate(/obj/machinery) in src)))
 		plantGrass()
 	if(icon_state != "wasteland")
@@ -90,8 +89,8 @@
 	var/randPlant = null
 
 	//spontaneously spawn grass
-	if(Plantforce || prob(GRASS_SPONTANEOUS))
-		randPlant = pickweight(LUSH_PLANT_SPAWN_LIST) //Create a new grass object at this location, and assign var
+	if(Plantforce || prob(GRASS_SPONTANEOUS_GROUND))
+		randPlant = pickweight(LUSH_PLANT_SPAWN_LIST_GROUND) //Create a new grass object at this location, and assign var
 		turfPlant = new randPlant(src)
 		. = TRUE //in case we ever need this to return if we spawned
 		return .
@@ -106,9 +105,9 @@
 
 		//If surrounded on 5+ sides, pick from lush
 		if(Weight == (5 * GRASS_WEIGHT))
-			randPlant = pickweight(LUSH_PLANT_SPAWN_LIST)
+			randPlant = pickweight(LUSH_PLANT_SPAWN_LIST_GROUND)
 		else
-			randPlant = pickweight(DESOLATE_PLANT_SPAWN_LIST)
+			randPlant = pickweight(DESOLATE_PLANT_SPAWN_LIST_GROUND)
 		turfPlant = new randPlant(src)
 		. = TRUE
 
@@ -120,12 +119,13 @@
 	if(turfPlant)
 		qdel(turfPlant)
 	. =  ..()
+
 /turf/open/indestructible/ground/outside/dirt
 	name = "dirt"
 	icon_state = "dirtfull"
 //	step_sounds = list("human" = "dirtfootsteps")
 //	allowed_plants = list(/obj/item/seeds/poppy/broc, /obj/item/seeds/xander, /obj/item/seeds/mutfruit, \
-	/obj/item/seeds/potato, /obj/item/seeds/carrot, /obj/item/seeds/pumpkin, /obj/item/seeds/corn, /obj/item/seeds/agave)
+//	/obj/item/seeds/potato, /obj/item/seeds/carrot, /obj/item/seeds/pumpkin, /obj/item/seeds/corn, /obj/item/seeds/agave)
 	slowdown = 0.2
 	flags_1 = CAN_HAVE_NATURE
 
@@ -154,8 +154,11 @@
 /turf/open/indestructible/ground/outside/ruins/ex_act(severity, target)
 	contents_explosion(severity, target)
 	switch(severity)
-		if(3)
+		if(4)
 			if(prob(5))
+				ChangeTurf(baseturfs)
+		if(3)
+			if(prob(25))
 				ChangeTurf(baseturfs)
 		if(2)
 			if(prob(50))
@@ -163,12 +166,10 @@
 		if(1)
 			ChangeTurf(baseturfs)
 
-
-
 /////////////////////////////////////////////////////////
 
+#define SHROOM_SPAWN_GROUND	1
 
-#define SHROOM_SPAWN	1
 /turf/open/indestructible/ground/inside/mountain
 	name = "cave"
 	icon_state = "rockfloor1"
@@ -185,7 +186,7 @@
 		plantShrooms()
 
 /turf/open/indestructible/ground/inside/mountain/proc/plantShrooms()
-	if(prob(SHROOM_SPAWN))
+	if(prob(SHROOM_SPAWN_GROUND))
 		turfPlant = new /obj/structure/flora/wasteplant/wild_fungus(src)
 		. = TRUE //in case we ever need this to return if we spawned
 		return.

@@ -11,10 +11,19 @@
 	name = "speed loader (.38)"
 	desc = "Designed to quickly reload revolvers."
 	icon_state = "38"
-	ammo_type = /obj/item/ammo_casing/c38
+	ammo_type = /obj/item/ammo_casing/a357/c38
 	max_ammo = 6
 	multiple_sprites = 1
 	materials = list(MAT_METAL = 2000)
+
+/obj/item/ammo_box/l10mm
+	name = "speed loader (10mm)"
+	desc = "Designed to quickly reload revolvers."
+	icon_state = "10mm"
+	ammo_type = /obj/item/ammo_casing/c10mm
+	max_ammo = 6
+	multiple_sprites = 1
+	materials = list(MAT_METAL = 4000)
 
 /obj/item/ammo_box/m44
 	name = "speed loader (.44)"
@@ -83,7 +92,7 @@
 /obj/item/ammo_box/box38
 	name = "ammo box (.38)"
 	icon_state = "38box"
-	ammo_type = /obj/item/ammo_casing/c38
+	ammo_type = /obj/item/ammo_casing/a357/c38
 	max_ammo = 30
 	materials = list(MAT_METAL = 15000)
 	w_class = WEIGHT_CLASS_NORMAL
@@ -212,7 +221,7 @@
 /obj/item/ammo_box/a308
 	name = "stripper clip (.308)"
 	desc = "A stripper clip."
-	icon_state = "762"
+	icon_state = "308"
 	ammo_type = /obj/item/ammo_casing/a308
 	max_ammo = 5
 	multiple_sprites = 1

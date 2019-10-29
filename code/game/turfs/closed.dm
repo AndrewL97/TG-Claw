@@ -51,9 +51,6 @@
 /turf/closed/indestructible/oldshuttle/corner
 	icon_state = "corner"
 
-
-
-
 /turf/closed/indestructible/splashscreen
 	var/tickerPeriod = 300 //in deciseconds
 	var/atom/movable/fullDark
@@ -65,7 +62,7 @@
 
 /turf/closed/indestructible/splashscreen/New()
 	icon = 'icons/misc/splashscreen.dmi'
-	icon_state = "title1"
+	icon_state = "title[rand(1,12)]"
 
 	src.fullDark = new/atom/movable{
 		icon = 'icons/misc/splashscreen.dmi' //Replace with actual icon
@@ -93,9 +90,16 @@
 /turf/closed/indestructible/splashscreen/proc/swapImage()
 	animate(fullDark,alpha=255,time=10,easing=CUBIC_EASING)
 	sleep(12) //buffer of about 1/5 of the time of the animation, since they are not synchronized: the sleep happens on the server, but the animation is played for each client using directX. It's good to leave a buffer, but most of the time the directX will be much faster than the server anyway so you probably wont have any problems.
-	icon_state = "title[rand(1,13)]"
+	chooseIcon()
 	animate(fullDark,alpha=0,time=10,easing=CUBIC_EASING)
 	return
+
+/turf/closed/indestructible/splashscreen/proc/chooseIcon()
+	var/chosen_icon = "title[rand(1,12)]"
+	if(icon_state != chosen_icon)
+		icon_state = chosen_icon
+	else
+		chooseIcon()
 
 /turf/closed/indestructible/splashscreen/vv_edit_var(var_name, var_value)
 	. = ..()
@@ -103,10 +107,6 @@
 		switch(var_name)
 			if("icon")
 				SStitle.icon = icon
-
-
-
-
 
 /turf/closed/indestructible/riveted
 	icon = 'icons/turf/walls/riveted.dmi'
@@ -154,7 +154,7 @@
 
 /turf/closed/indestructible/fakeglass/Initialize()
 	icon_state = "rock"
-	..()
+	. = ..()
 
 /turf/closed/indestructible/rock/snow
 	name = "mountainside"
@@ -217,3 +217,10 @@
 	desc = "A wall made out of metal, really fucking tough metal. They definitely didn't want everything to give away around the door."
 	icon = 'icons/turf/walls/f13vault_reinforced_wall.dmi'
 	icon_state = "vaultwall"
+
+/turf/closed/indestructible/ncrwall
+	name = "sturdy wall"
+	desc = "This metal was forged in the fires of nuclear desolation, brought up from the mantle by the disruption of tectonic plates. In short, you can't break these cuffs."
+	icon = 'icons/fallout/turfs/walls/superstore.dmi'
+	icon_state = "supermart0"
+	icon_type_smooth = "supermart"

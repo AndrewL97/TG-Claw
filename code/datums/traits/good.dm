@@ -42,6 +42,15 @@
 	gain_text = "<span class='notice'>The mysteries of chemistry are revealed to you.</span>"
 	lose_text = "<span class='danger'>You forget how the periodic table works.</span>"
 */
+/*
+/datum/quirk/pa_wear
+	name = "PA Wear"
+	desc = "You've being around the wastes and have learned the importance of defense."
+	value = 3
+	mob_trait = TRAIT_PA_WEAR
+	gain_text = "<span class='notice'>You realize how to use Power Armor.</span>"
+	lose_text = "<span class='danger'>You forget how Power Armor works.</span>"
+*/
 /datum/quirk/drunkhealing
 	name = "Drunken Resilience"
 	desc = "Nothing like a good drink to make you feel on top of the world. Whenever you're drunk, you slowly recover from injuries."
@@ -108,21 +117,6 @@
 	mob_trait = TRAIT_LIGHT_STEP
 	gain_text = "<span class='notice'>You walk with a little more litheness.</span>"
 	lose_text = "<span class='danger'>You start tromping around like a barbarian.</span>"
-
-/datum/quirk/night_vision
-	name = "Night Vision"
-	desc = "You can see slightly more clearly in full darkness than most people."
-	value = 1
-	mob_trait = TRAIT_NIGHT_VISION
-	gain_text = "<span class='notice'>The shadows seem a little less dark.</span>"
-	lose_text = "<span class='danger'>Everything seems a little darker.</span>"
-
-/datum/quirk/night_vision/on_spawn()
-	var/mob/living/carbon/human/H = quirk_holder
-	var/obj/item/organ/eyes/eyes = H.getorgan(/obj/item/organ/eyes)
-	if(!eyes || eyes.lighting_alpha)
-		return
-	eyes.Insert(H) //refresh their eyesight and vision
 
 /datum/quirk/selfaware
 	name = "Self-Aware"

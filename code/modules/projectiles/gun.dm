@@ -8,7 +8,6 @@
 	icon_state = "detective"
 	item_state = "gun"
 	flags_1 =  CONDUCT_1
-	slot_flags = ITEM_SLOT_BELT
 	materials = list(MAT_METAL=2000)
 	w_class = WEIGHT_CLASS_NORMAL
 	throwforce = 5
@@ -31,6 +30,7 @@
 	var/sawn_off = FALSE
 	var/burst_size = 1					//how large a burst is
 	var/fire_delay = 0					//rate of fire for burst firing and semi auto
+	var/burst_delay = 2					//rate of fire between shots in a burst
 	var/firing_burst = 0				//Prevent the weapon from firing again while already firing
 	var/semicd = 0						//cooldown handler
 	var/weapon_weight = WEAPON_LIGHT
@@ -39,6 +39,7 @@
 	var/distro = 0						//Affects distance between shotgun pellets, ignore unless you're altering shotguns
 	var/extra_damage = 0				//Number to add to individual bullets.
 	var/extra_penetration = 0			//Number to add to armor penetration of individual bullets.
+	var/projectile_speed = 0.8			//Speed of the projectiles shot from gun in deciseconds per 1 tile
 
 	lefthand_file = 'icons/mob/inhands/weapons/guns_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/weapons/guns_righthand.dmi'
@@ -236,7 +237,7 @@
 		else //Smart spread
 			sprd = round((((rand_spr/burst_size) * iteration) - (0.5 + (rand_spr * 0.25))) * (randomized_gun_spread + randomized_bonus_spread))
 
-		if(!chambered.fire_casing(target, user, params, distro,suppressed, zone_override, sprd, extra_damage, extra_penetration))
+		if(!chambered.fire_casing(target, user, params, distro,suppressed, zone_override, sprd, extra_damage, extra_penetration, projectile_speed))
 			shoot_with_empty_chamber(user)
 			firing_burst = FALSE
 			return FALSE
@@ -276,7 +277,9 @@
 	if(burst_size > 1)
 		firing_burst = TRUE
 		for(var/i = 1 to burst_size)
-			addtimer(CALLBACK(src, .proc/process_burst, user, target, message, params, zone_override, sprd, randomized_gun_spread, randomized_bonus_spread, rand_spr, i), fire_delay * (i - 1))
+			addtimer(CALLBACK(src, .proc/process_burst, user, target, message, params, zone_override, sprd, randomized_gun_spread, randomized_bonus_spread, rand_spr, i), burst_delay * (i - 1))
+			semicd = TRUE
+			addtimer(CALLBACK(src, .proc/reset_semicd), fire_delay)
 	else
 		if(chambered)
 			if(user.has_trait(TRAIT_PACIFISM)) // If the user has the pacifist trait, then they won't be able to fire [src] if the round chambered inside of [src] is lethal.
@@ -284,7 +287,7 @@
 					to_chat(user, "<span class='notice'> [src] is lethally chambered! You don't want to risk harming anyone...</span>")
 					return
 			sprd = round((rand() - 0.5) * DUALWIELD_PENALTY_EXTRA_MULTIPLIER * (randomized_gun_spread + randomized_bonus_spread))
-			if(!chambered.fire_casing(target, user, params, distro, suppressed, zone_override, sprd, extra_damage, extra_penetration))
+			if(!chambered.fire_casing(target, user, params, distro, suppressed, zone_override, sprd, extra_damage, extra_penetration, projectile_speed))
 				shoot_with_empty_chamber(user)
 				return
 			else
@@ -423,15 +426,15 @@
 		azoom.Grant(user)
 	if(alight)
 		alight.Grant(user)
-	
-		
+
+
 /obj/item/gun/equipped(mob/living/user, slot)
 	. = ..()
 	if(user.get_active_held_item() != src) //we can only stay zoomed in if it's in our hands	//yeah and we only unzoom if we're actually zoomed using the gun!!
 		zoom(user, FALSE)
 		if(zoomable == TRUE)
 			azoom.Remove(user)
-	
+
 /obj/item/gun/dropped(mob/user)
 	. = ..()
 	if(zoomed)
@@ -440,7 +443,7 @@
 		azoom.Remove(user)
 	if(alight)
 		alight.Remove(user)
-	
+
 /obj/item/gun/proc/handle_suicide(mob/living/carbon/human/user, mob/living/carbon/human/target, params)
 	if(!ishuman(user) || !ishuman(target))
 		return
@@ -551,7 +554,9 @@
 		chambered = null
 		update_icon()
 
-/obj/item/binocs
+
+/* TODO: Make a twohanded component to handle basic wield/unwield capability, idk */
+/obj/item/twohanded/binocs
 	name = "binoculars"
 	desc = "Lets you see trouble coming - or get into it - from a distance."
 	icon = 'icons/obj/clothing/glasses.dmi'
@@ -572,30 +577,41 @@
 	var/zoom_out_amt = 13
 	var/datum/action/toggle_binoc_zoom/azoom
 
-/obj/item/binocs/pickup(mob/user)
+/obj/item/twohanded/binocs/wield(mob/user)
 	..()
+	if(wielded)
+		addZoom(user)
+
+
+/obj/item/twohanded/binocs/dropped(mob/user)
+	..()
+	removeZoom(user)
+
+/obj/item/twohanded/binocs/unwield(mob/user, show_message)
+	..()
+	removeZoom(user)
+
+/obj/item/twohanded/binocs/proc/addZoom(mob/user)
 	if(azoom)
 		azoom.Grant(user)
 
-/obj/item/binocs/dropped(mob/user)
-	..()
+/obj/item/twohanded/binocs/proc/removeZoom(mob/user)
 	if(zoomed)
 		zoom(user,FALSE)
 	if(azoom)
 		azoom.Remove(user)
 
-/obj/item/binocs/equipped(mob/living/user, slot)
+/obj/item/twohanded/binocs/equipped(mob/living/user, slot)
 	. = ..()
 	if(user.get_active_held_item() != src)
-		zoom(user, FALSE) //Sometimes I wonder why the fuck binoculars are here too with a action.
-		azoom.Remove(user)
+		removeZoom(user)
 
 /datum/action/toggle_binoc_zoom
 	name = "Use Binoculars"
 	check_flags = AB_CHECK_CONSCIOUS|AB_CHECK_RESTRAINED|AB_CHECK_STUN|AB_CHECK_LYING
 	icon_icon = 'icons/mob/actions/actions_items.dmi'
 	button_icon_state = "binoc_zoom"
-	var/obj/item/binocs/B = null
+	var/obj/item/twohanded/binocs/B = null
 
 /datum/action/toggle_binoc_zoom/Trigger()
 	B.zoom(owner)
@@ -609,7 +625,7 @@
 	B.zoom(L, FALSE)
 	..()
 
-/obj/item/binocs/proc/zoom(mob/living/user, forced_zoom)
+/obj/item/twohanded/binocs/proc/zoom(mob/living/user, forced_zoom)
 	if(!user || !user.client)
 		return
 
@@ -619,7 +635,7 @@
 		if(TRUE)
 			zoomed = TRUE
 		else
-			zoomed = !zoomed
+			zoomed = !zoomed /* WHAT!??? */
 
 	if(zoomed)
 		var/_x = 0
@@ -643,11 +659,11 @@
 		user.client.pixel_y = 0
 	return zoomed
 
-/obj/item/binocs/Initialize()
+/obj/item/twohanded/binocs/Initialize()
 	. = ..()
 	build_zooming()
 
-/obj/item/binocs/proc/build_zooming()
+/obj/item/twohanded/binocs/proc/build_zooming()
 	if(azoom)
 		return
 

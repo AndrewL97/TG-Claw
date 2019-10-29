@@ -64,7 +64,7 @@
 /*see __DEFINES/inventory.dm for bodypart bitflag defines*/
 
 // Health/damage defines for carbon mobs
-#define HUMAN_MAX_OXYLOSS 3
+#define HUMAN_MAX_OXYLOSS 1
 #define HUMAN_CRIT_MAX_OXYLOSS (SSmobs.wait/30)
 
 #define HEAT_DAMAGE_LEVEL_1 2 //Amount of damage applied when your body temperature just passes the 360.15k safety point
@@ -257,4 +257,4 @@
 #define AI_VOX // Comment out if you don't want VOX to be enabled and have players download the voice sounds.
 
 //Respawn timer
-#define RESPAWN_TIMER 6000 // in deciseconds, the time to wait before allowing respawn. 10 minutes = 10 * 60 (seconds in minute) * 10 (seconds to deciseconds)
+#define RESPAWN_TIMER 9000 // in deciseconds, the time to wait before allowing respawn. 15 minutes = 15 * 60 (seconds in minute) * 15 (seconds to deciseconds)

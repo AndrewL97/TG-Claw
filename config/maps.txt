@@ -13,9 +13,10 @@ Format:
 	disabled (disables the map)
 endmap
 
-map boxstation
-	default
-endmap
-
 map pahrump
+	default
+	votable
+endmap
+map boxstation
+	votable
 endmap

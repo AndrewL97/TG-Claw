@@ -127,8 +127,9 @@
 	flags_cover = HEADCOVERSEYES
 
 /*
- * Kitty ears
+ * Kitty ears - ADMINSPAWNABLE ONLY
  */
+
 /obj/item/clothing/head/kitty
 	name = "kitty ears"
 	desc = "A pair of kitty ears. Meow!"
@@ -150,6 +151,7 @@
 
 /obj/item/clothing/head/kitty/genuine
 	desc = "A pair of kitty ears. A tag on the inside says \"Hand made from real cats.\""
+
 
 
 /obj/item/clothing/head/hardhat/reindeer

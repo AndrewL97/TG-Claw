@@ -20,7 +20,7 @@
 /mob/proc/whisper(message, datum/language/language=null)
 	say(message, language) //only living mobs actually whisper, everything else just talks
 
-/mob/verb/me_verb(message as message) //messages give you bigger boxes on text inputs, null| can be set before them too.
+/mob/verb/me_verb(message as text) //Moving from message to text because single-line input boxes are more user-friendly
 	set name = "Me"
 	set category = "IC"
 	if(GLOB.say_disabled)	//This is here to try to identify lag problem
@@ -47,15 +47,17 @@
 		to_chat(src, "<span class='danger'>You have been banned from deadchat.</span>")
 		return
 
-
-
 	if (src.client)
 		if(src.client.prefs.muted & MUTE_DEADCHAT)
 			to_chat(src, "<span class='danger'>You cannot talk in deadchat (muted).</span>")
 			return
 
-		if(src.client.handle_spam_prevention(message,MUTE_DEADCHAT))
-			return
+	if(!GLOB.dsay_allowed)
+		to_chat(src, "<span class='danger'>Deadchat is globally muted.</span>")
+		return
+
+	if(src.client.handle_spam_prevention(message,MUTE_DEADCHAT))
+		return
 
 	var/mob/dead/observer/O = src
 	if(isobserver(src) && O.deadchat_name)
@@ -77,6 +79,16 @@
 	var/rendered = "<span class='game deadsay'><span class='prefix'>DEAD:</span> <span class='name'>[name]</span>[alt_name] <span class='message'>[message]</span></span>"
 	log_message("DEAD: [message]", INDIVIDUAL_SAY_LOG)
 	deadchat_broadcast(rendered, follow_target = src, speaker_key = K)
+
+/proc/toggle_dsay(toggle = null)
+	if(toggle != null)
+		if(toggle != GLOB.dsay_allowed)
+			GLOB.dsay_allowed = toggle
+		else
+			return
+	else //otherwise just toggle it
+		GLOB.dsay_allowed = !GLOB.dsay_allowed
+	to_chat(world, "<B>Deadchat has been globally [GLOB.dsay_allowed ? "enabled" : "disabled"].</B>")
 
 /mob/proc/check_emote(message)
 	if(copytext(message, 1, 2) == "*")

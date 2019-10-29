@@ -7,7 +7,6 @@
 	slot_flags = SLOT_BELT
 	var/id = null
 	var/static/list/used_ids = list()
-	var/transfer_prints = FALSE
 
 /obj/item/door_key/New()
 	..()
@@ -52,12 +51,9 @@
 	var/try_id = 1
 	if(used_ids.len)
 		try_id = text2num(used_ids[used_ids.len]) + 1
-	CYCLE
-	if(!used_ids[num2text(try_id)])
-		return try_id
-	try_id++
-	goto CYCLE
-	return null
+	while(used_ids[num2text(try_id)])
+		try_id++
+	return try_id++
 
 /obj/item/storage/keys_set
 	name       = "key chain"
@@ -74,14 +70,16 @@
 	STR.max_combined_w_class = 35
 
 /obj/item/storage/keys_set/update_icon()
-	icon_state = "keychain_[contents.len]"
+	if(contents.len <= 4)
+		icon_state = "keychain_[contents.len]"
+	else
+		icon_state = "keychain_4"
 
 /obj/item/storage/keys_set/proc/get_key_with_id(id)
 	for(var/obj/item/door_key/K in contents)
 		if(K.id == id)
 			return K
 	return null
-
 
 /obj/item/lock
 	name = "unusable padlock"

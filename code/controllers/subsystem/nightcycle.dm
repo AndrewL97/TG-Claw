@@ -11,9 +11,13 @@
 #define CYCLE_SUNSET 	783000
 #define CYCLE_NIGHTTIME 810000
 
+GLOBAL_LIST_INIT(nightcycle_turfs, typecacheof(list(
+	/turf/open/indestructible/ground/outside,
+	/turf/open/floor/plating/f13/outside)))
+
 SUBSYSTEM_DEF(nightcycle)
 	name = "Day/Night Cycle"
-	wait = 7.5
+	wait = 4
 	//var/flags = 0			//see MC.dm in __DEFINES Most flags must be set on world start to take full effect. (You can also restart the mc to force them to process again
 	can_fire = TRUE
 	//var/list/timeBrackets = list("SUNRISE" = , "MORNING" = , "DAYTIME" = , "EVENING" = , "" = ,)
@@ -60,12 +64,13 @@ SUBSYSTEM_DEF(nightcycle)
 /datum/controller/subsystem/nightcycle/proc/doWork()
 	var/list/currentTurfs = list()
 	var/x = min(currentColumn + doColumns, world.maxx)
-
 	for (var/z in SSmapping.levels_by_trait(ZTRAIT_STATION))
 		currentTurfs += block(locate(currentColumn,1,z), locate(x,world.maxy,z))
-	for(var/turf/open/indestructible/ground/outside/T in currentTurfs)
-		spawn(5)
-			T.set_light(T.light_range, sunPower, sunColour)
+	for (var/t in currentTurfs)
+		var/turf/T = t
+		if(T.type in GLOB.nightcycle_turfs)
+			T.set_light(T.turf_light_range, sunPower, sunColour)
+
 	currentColumn = x + 1
 	if (currentColumn > world.maxx)
 		currentColumn = 1
@@ -91,7 +96,7 @@ SUBSYSTEM_DEF(nightcycle)
 			sunPower = 0.3
 		if("NIGHTTIME")
 			sunColour = "#00111a"
-			sunPower = 0.15
+			sunPower = 0.20
 
 
 

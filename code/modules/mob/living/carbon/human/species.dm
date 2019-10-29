@@ -55,7 +55,7 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 	var/sound/attack_sound = 'sound/weapons/punch1.ogg'
 	var/sound/miss_sound = 'sound/weapons/punchmiss.ogg'
 
-	var/mob/living/list/ignored_by = list()	// list of mobs that will ignore this species
+	var/list/mob/living/ignored_by = list()	// list of mobs that will ignore this species
 	//Breathing!
 	var/obj/item/organ/lungs/mutantlungs = null
 	var/breathid = "o2"
@@ -1114,15 +1114,17 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 			. += H.shoes.slowdown
 		if(H.back)
 			. += H.back.slowdown
+		if(H.head)
+			. += H.head.slowdown
 		for(var/obj/item/I in H.held_items)
 			if(I.item_flags & SLOWS_WHILE_IN_HAND)
 				. += I.slowdown
 		var/health_deficiency = (100 - H.health + H.staminaloss)
-		if(health_deficiency >= 40)
+		if(health_deficiency >= 40 && !H.has_trait(TRAIT_IGNOREDAMAGESLOWDOWN))
 			if(flight)
 				. += (health_deficiency / 75)
 			else
-				. += (health_deficiency / 25)
+				. += (health_deficiency / 40)
 		if(CONFIG_GET(flag/disable_human_mood))
 			var/hungry = (500 - H.nutrition) / 5 //So overeat would be 100 and default level would be 80
 			if((hungry >= 70) && !flight) //Being hungry will still allow you to use a flightsuit/wings.

@@ -305,6 +305,16 @@
 	..()
 	. = 1
 
+/datum/reagent/consumable/lemonade
+	name = "Lemonade"
+	id = "lemonade"
+	description = "Sweet, tangy lemonade. Good for the soul."
+	color = "#FFE978"
+	taste_description = "sunshine and summertime"
+	glass_icon_state = "lemonpitcher"
+	glass_name = "pitcher of lemonade"
+	glass_desc = "This drink leaves you feeling nostalgic for some reason."
+
 /datum/reagent/consumable/tea/arnold_palmer
 	name = "Arnold Palmer"
 	id = "arnold_palmer"
@@ -387,14 +397,6 @@
 	glass_icon_state = "nuka_colaglass"
 	glass_name = "glass of Nuka Cola"
 	glass_desc = "Don't cry, Don't raise your eye, It's only nuclear wasteland."
-
-/datum/reagent/consumable/nuka_cola/on_mob_add(mob/living/L)
-	..()
-	L.add_trait(TRAIT_GOTTAGOFAST, id)
-
-/datum/reagent/consumable/nuka_cola/on_mob_delete(mob/living/L)
-	L.remove_trait(TRAIT_GOTTAGOFAST, id)
-	..()
 
 /datum/reagent/consumable/nuka_cola/on_mob_life(mob/living/carbon/M)
 	M.Jitter(20)

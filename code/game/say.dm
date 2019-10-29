@@ -20,7 +20,8 @@ GLOBAL_LIST_INIT(freqtospan, list(
 	"[FREQ_NCR]" = "ncrradio",
 	"[FREQ_BOS]" = "bosradio",
 	"[FREQ_ENCLAVE]" = "enclaveradio",
-	"[FREQ_DEN]" = "denradio"
+	"[FREQ_DEN]" = "denradio",
+	"[FREQ_LEGION]" = "legionradio"
 	))
 
 /atom/movable/proc/say(message, datum/language/language = null)
@@ -167,6 +168,11 @@ GLOBAL_LIST_INIT(freqtospan, list(
 
 /atom/movable/proc/GetRadio()
 
+/mob/living/GetJob()
+	if (mind && mind.assigned_role)
+		return SSjob.GetJob(mind.assigned_role)
+
+
 //VIRTUALSPEAKERS
 /atom/movable/virtualspeaker
 	var/job
@@ -187,7 +193,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/virtualspeaker)
 
 	// The mob's job identity
 	if(ishuman(M))
-		// Humans use their job as seen on the crew manifest. This is so the AI
+		// Humans use their job as seen on the Wasteland Census. This is so the AI
 		// can know their job even if they don't carry an ID.
 		var/datum/data/record/findjob = find_record("name", name, GLOB.data_core.general)
 		if(findjob)

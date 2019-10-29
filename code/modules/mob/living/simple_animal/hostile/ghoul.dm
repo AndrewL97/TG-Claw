@@ -26,6 +26,7 @@
 	stat_attack = UNCONSCIOUS
 	gold_core_spawnable = HOSTILE_SPAWN
 	faction = list("ghoul")
+	decompose = TRUE
 	butcher_results = list(/obj/item/reagent_containers/food/snacks/meat/slab/human/ghoul = 2,
 							/obj/item/stack/sheet/animalhide/human = 1,
 							/obj/item/stack/sheet/bone = 1)
@@ -46,6 +47,7 @@
 	melee_damage_upper = 15
 
 /mob/living/simple_animal/hostile/ghoul/glowing
+	name = "glowing feral ghoul"
 	desc = "A feral ghoul that has absorbed massive amounts of radiation, causing them to glow in the dark and radiate constantly.."
 	icon_state = "glowinghoul"
 	icon_living = "glowinghoul"
@@ -69,4 +71,4 @@
 	. = ..()
 	if(. && ishuman(target))
 		var/mob/living/carbon/human/H = target
-		H.apply_effect(5,EFFECT_IRRADIATE,0)
+		H.apply_effect(20, EFFECT_IRRADIATE, 0)

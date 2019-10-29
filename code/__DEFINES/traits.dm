@@ -12,6 +12,7 @@
 #define TRAIT_MONKEYLIKE		"monkeylike" //sets IsAdvancedToolUser to FALSE
 #define TRAIT_PACIFISM			"pacifism"
 #define TRAIT_IGNORESLOWDOWN	"ignoreslow"
+#define TRAIT_IGNOREDAMAGESLOWDOWN	"ignoredamageslow"
 #define TRAIT_GOTTAGOFAST		"fast"
 #define TRAIT_GOTTAGOREALLYFAST	"2fast"
 #define TRAIT_LEGIONBOIS		"SpeedyLegionBois"
@@ -71,7 +72,8 @@
 #define	TRAIT_LIFEGIVER			"lifegiver"
 
 #define	TRAIT_CHEMWHIZ			"chemwhiz"
-#define TRAIT_TECHNOPHREAK		"technophreak"
+#define TRAIT_TECHNOPHREAK		"technophreak" //Is this even really used?
+#define TRAIT_PA_WEAR           "pa_wear"
 
 // common trait sources
 #define TRAIT_GENERIC "generic"

@@ -6,12 +6,12 @@ Mayor
 	title = "Mayor"
 	flag = F13MAYOR
 	department_flag = DEN
-	faction = "Kebab"
+	faction = "Town"
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "the people of the town"
-	selection_color = "#dcba97"
-	exp_requirements = 720
+	selection_color = "#d7b088"
+	exp_requirements = 1080
 	exp_type = EXP_TYPE_DEN
 
 	outfit = /datum/outfit/job/den/f13mayor
@@ -27,21 +27,24 @@ Mayor
 	l_pocket = /obj/item/storage/bag/money/small/settler
 	r_pocket = /obj/item/flashlight/flare
 	belt = /obj/item/gun/ballistic/revolver/colt357
-	shoes = 		/obj/item/clothing/shoes/workboots
-	uniform = /obj/item/clothing/under/f13/cowboyg
-	suit = /obj/item/clothing/suit/f13/cowboygvest
+	shoes = 		/obj/item/clothing/shoes/f13/tan
+	uniform = /obj/item/clothing/under/f13/gentlesuit
+	suit = /obj/item/clothing/suit/armor/f13/town/mayor
+	head = /obj/item/clothing/head/f13/town/mayor
 	backpack_contents = list(
+		/obj/item/clothing/head/f13/town/big, \
 		/obj/item/ammo_box/a357=2)
 
 /*
 Sheriff
 */
+
 /datum/job/den/f13sheriff
 	title = "Sheriff"
 	flag = F13SHERIFF
 	department_flag = DEN
 	head_announce = list("Security")
-	faction = "Kebab"
+	faction = "Town"
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "the mayor"
@@ -61,16 +64,16 @@ Sheriff
 	satchel = /obj/item/storage/backpack/satchel/explorer
 
 	ears = 			/obj/item/radio/headset/headset_den
-	uniform =  		/obj/item/clothing/under/f13/cowboyb
-	shoes = 		/obj/item/clothing/shoes/workboots
-	suit = 			/obj/item/clothing/suit/det_suit
-	head = 			/obj/item/clothing/head/fluff/cowboy
+	uniform =  		/obj/item/clothing/under/f13/sheriff
+	shoes = 		/obj/item/clothing/shoes/f13/cowboy
+	suit = 			/obj/item/clothing/suit/armor/f13/town/sheriff
+	head = 			/obj/item/clothing/head/f13/town/sheriff
 	glasses =		/obj/item/clothing/glasses/sunglasses
-	l_hand = 		/obj/item/gun/ballistic/shotgun/automatic/hunting/cowboy
+	l_hand = 		/obj/item/gun/ballistic/shotgun/automatic/hunting/brush
 	l_pocket =		/obj/item/storage/bag/money/small/den
 	backpack_contents = list(
 		/obj/item/storage/box/deputy_badges=1, \
-		/obj/item/ammo_box/tube/a357=2, \
+		/obj/item/ammo_box/tube/c4570=2, \
 		/obj/item/ammo_box/m44=2, \
 		/obj/item/restraints/handcuffs=1)
 	r_pocket = /obj/item/flashlight/flare
@@ -84,41 +87,43 @@ Sheriff
 	//var/item1_type = pick( /obj/item/stack/spacecash/c10, /obj/item/stack/spacecash/c100, /obj/item/stack/spacecash/c1000, /obj/item/stack/spacecash/c20, /obj/item/stack/spacecash/c200, /obj/item/stack/spacecash/c50, /obj/item/stack/spacecash/c500)
 
 /*
-Settler
+Deputy
 */
 
-/datum/job/den/f13settler
-	title = "Settler"
-	flag = F13SETTLER
+/datum/job/den/f13deputy
+	title = "Deputy"
+	flag = F13DEPUTY
 	department_flag = DEN
-	faction = "Kebab"
-	total_positions = 6
-	spawn_positions = 6
+	faction = "Town"
+	total_positions = 2
+	spawn_positions = 2
 	supervisors = "the sheriff and the mayor"
 	selection_color = "#dcba97"
+	exp_requirements = 360
+	exp_type = EXP_TYPE_DEN
 
-	outfit = /datum/outfit/job/den/f13settler
+	outfit = /datum/outfit/job/den/f13deputy
 
-/datum/outfit/job/den/f13settler
-	name = "Settler"
-	jobtype = /datum/job/den/f13settler
+/datum/outfit/job/den/f13deputy
+	name = "Deputy"
+	jobtype = /datum/job/den/f13deputy
 
 	ears = 			/obj/item/radio/headset/headset_den
-	id = null
-	belt = null
+	id =            /obj/item/card/id/dogtag/deputy
 	backpack = /obj/item/storage/backpack/satchel/explorer
 	satchel = /obj/item/storage/backpack/satchel/explorer
 	l_pocket = /obj/item/storage/bag/money/small/settler
 	r_pocket = /obj/item/flashlight/flare
-
-/datum/outfit/job/den/f13settler/pre_equip(mob/living/carbon/human/H)
-	..()
-	uniform = pick(
-		/obj/item/clothing/under/f13/settler, \
-		/obj/item/clothing/under/f13/brahminm, \
-		/obj/item/clothing/under/f13/machinist, \
-		/obj/item/clothing/under/f13/lumberjack, \
-		/obj/item/clothing/under/f13/roving)
+	r_hand = /obj/item/gun/ballistic/shotgun/automatic/hunting/trail
+	suit = 			/obj/item/clothing/suit/armor/f13/town/deputy
+	head =	/obj/item/clothing/head/f13/town/deputy
+	belt = /obj/item/gun/ballistic/revolver/colt357
+	shoes = 		/obj/item/clothing/shoes/f13/explorer
+	uniform = /obj/item/clothing/under/f13/cowboyb
+	backpack_contents = list(
+		/obj/item/ammo_box/a357=2, \
+		/obj/item/ammo_box/tube/m44=2, \
+		/obj/item/restraints/handcuffs=1)
 
 /*
 Farmer
@@ -128,11 +133,12 @@ Farmer
 	title = "Farmer"
 	flag = F13FARMER
 	department_flag = DEN
-	faction = "Kebab"
+	faction = "Town"
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "the sheriff and the mayor"
 	selection_color = "#dcba97"
+
 
 	outfit = /datum/outfit/job/den/f13settler
 
@@ -163,7 +169,6 @@ Farmer
 		/obj/item/clothing/under/f13/lumberjack, \
 		/obj/item/clothing/under/f13/roving)
 
-
 /*
 Prospector
 */
@@ -172,11 +177,13 @@ Prospector
 	title = "Prospector"
 	flag = F13PROSPECTOR
 	department_flag = DEN
-	faction = "Kebab"
+	faction = "Town"
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "the sheriff and the mayor"
 	selection_color = "#dcba97"
+	exp_requirements = 180
+	exp_type = EXP_TYPE_DEN
 
 	outfit = /datum/outfit/job/den/f13prospector
 
@@ -184,7 +191,7 @@ Prospector
 	name = "Prospector"
 	jobtype = /datum/job/den/f13prospector
 
-	ears = 			/obj/item/radio/headset/headset_den
+	ears = /obj/item/radio/headset/headset_den
 	id = null
 	backpack = /obj/item/storage/backpack/satchel/explorer
 	satchel = /obj/item/storage/backpack/satchel/explorer
@@ -192,7 +199,7 @@ Prospector
 	r_pocket = /obj/item/flashlight/flare
 	r_hand = /obj/item/pickaxe
 	belt = /obj/item/storage/bag/ore
-	shoes = 		/obj/item/clothing/shoes/workboots
+	shoes = /obj/item/clothing/shoes/workboots
 	backpack_contents = list(
 		/obj/item/mining_scanner=1, \
 		/obj/item/shovel=1)
@@ -205,42 +212,42 @@ Prospector
 		/obj/item/clothing/under/f13/cowboyt)
 
 /*
-Deputy
+Doctor
 */
 
-/datum/job/den/f13deputy
-	title = "Deputy"
-	flag = F13DEPUTY
+/datum/job/den/f13dendoc
+	title = "Doctor"
+	flag = F13DENDOC
 	department_flag = DEN
-	faction = "Kebab"
+	faction = "Town"
 	total_positions = 2
 	spawn_positions = 2
+	description = "You are in charge of providing medical assistance to the inhabitants of the town as needed."
 	supervisors = "the sheriff and the mayor"
 	selection_color = "#dcba97"
-	exp_requirements = 360
+	exp_requirements = 540
 	exp_type = EXP_TYPE_DEN
 
-	outfit = /datum/outfit/job/den/f13deputy
+	outfit = /datum/outfit/job/den/f13dendoc
 
-/datum/outfit/job/den/f13deputy
-	name = "Deputy"
-	jobtype = /datum/job/den/f13deputy
-
-	ears = 			/obj/item/radio/headset/headset_den
-	id =            /obj/item/card/id/dogtag/deputy
+/datum/outfit/job/den/f13dendoc
+	name = "Doctor"
+	jobtype = /datum/job/den/f13dendoc
+	chemwhiz = TRUE
+	uniform = /obj/item/clothing/under/f13/medic
+	ears = /obj/item/radio/headset/headset_den
+	suit = /obj/item/clothing/suit/toggle/labcoat
 	backpack = /obj/item/storage/backpack/satchel/explorer
 	satchel = /obj/item/storage/backpack/satchel/explorer
+	shoes = /obj/item/clothing/shoes/sneakers/white
+	id = /obj/item/card/id/dendoctor
 	l_pocket = /obj/item/storage/bag/money/small/settler
 	r_pocket = /obj/item/flashlight/flare
-	r_hand = /obj/item/gun/ballistic/shotgun/remington
-	suit = 			/obj/item/clothing/suit/det_suit
-	belt = /obj/item/gun/ballistic/revolver/colt357
-	shoes = 		/obj/item/clothing/shoes/workboots
-	uniform = /obj/item/clothing/under/f13/shiny
 	backpack_contents = list(
-		/obj/item/ammo_box/a762=1, \
-		/obj/item/ammo_box/a357=2, \
-		/obj/item/restraints/handcuffs=1)
+		/obj/item/reagent_containers/hypospray/medipen/stimpak=2, \
+		/obj/item/storage/firstaid/regular,  \
+		)
+	box = null
 
 /*
 Preacher
@@ -252,18 +259,16 @@ Preacher
 	department_head = list("Captain")
 	department_flag = DEN
 	head_announce = list("Security")
-	faction = "Kebab"
+	faction = "Town"
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "Your Master(s)."
-	selection_color = "#dddddd"
+	selection_color = "#dcba97"
 
 	outfit = /datum/outfit/job/den/f13preacher
 
 	access = list()
 	minimal_access = list()
-
-
 
 /datum/job/den/f13preacher/after_spawn(mob/living/H, mob/M)
 	if(H.mind)
@@ -292,7 +297,6 @@ Preacher
 		new_deity = M.client.prefs.custom_names["deity"]
 
 	B.deity_name = new_deity
-
 
 	switch(lowertext(new_religion))
 		if("christianity")
@@ -330,7 +334,6 @@ Preacher
 	SSblackbox.record_feedback("text", "religion_name", 1, "[new_religion]", 1)
 	SSblackbox.record_feedback("text", "religion_deity", 1, "[new_deity]", 1)
 
-
 /datum/outfit/job/den/f13preacher
 	name = "Preacher"
 	jobtype = /datum/job/den/f13preacher
@@ -356,38 +359,38 @@ Preacher
 		/obj/item/storage/bag/money/small/settler)
 
 /*
-Kebab Doctor
+Settler
 */
 
-/datum/job/den/f13dendoc
-	title = "Kebab Doctor"
-	flag = F13DENDOC
+/datum/job/den/f13settler
+	title = "Settler"
+	flag = F13SETTLER
 	department_flag = DEN
-	faction = "Kebab"
-	total_positions = 2
-	spawn_positions = 2
-	description = "You are in charge of providing medical assistance to the inhabitants of the Kebab as needed."
+	faction = "Town"
+	total_positions = 6
+	spawn_positions = 6
 	supervisors = "the sheriff and the mayor"
 	selection_color = "#dcba97"
-	exp_requirements = 300
 
-	outfit = /datum/outfit/job/den/f13dendoc
+	outfit = /datum/outfit/job/den/f13settler
 
-/datum/outfit/job/den/f13dendoc
-	name = "Kebab Doctor"
-	jobtype = /datum/job/den/f13dendoc
-	chemwhiz = TRUE
-	uniform =  		/obj/item/clothing/under/f13/medic
+/datum/outfit/job/den/f13settler
+	name = "Settler"
+	jobtype = /datum/job/den/f13settler
+
 	ears = 			/obj/item/radio/headset/headset_den
-	suit = 			/obj/item/clothing/suit/toggle/labcoat
-	backpack = 		/obj/item/storage/backpack/satchel/explorer
-	satchel =       /obj/item/storage/backpack/satchel/explorer
-	shoes =         /obj/item/clothing/shoes/sneakers/white
 	id = null
-	l_pocket =      /obj/item/storage/bag/money/small/settler
+	belt = null
+	backpack = /obj/item/storage/backpack/satchel/explorer
+	satchel = /obj/item/storage/backpack/satchel/explorer
+	l_pocket = /obj/item/storage/bag/money/small/settler
 	r_pocket = /obj/item/flashlight/flare
-	backpack_contents = list(
-		/obj/item/reagent_containers/hypospray/medipen/stimpak=2, \
-		/obj/item/storage/firstaid/regular,  \
-		)
-	box = null
+
+/datum/outfit/job/den/f13settler/pre_equip(mob/living/carbon/human/H)
+	..()
+	uniform = pick(
+		/obj/item/clothing/under/f13/settler, \
+		/obj/item/clothing/under/f13/brahminm, \
+		/obj/item/clothing/under/f13/machinist, \
+		/obj/item/clothing/under/f13/lumberjack, \
+		/obj/item/clothing/under/f13/roving)
